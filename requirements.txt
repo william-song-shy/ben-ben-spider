@@ -1,0 +1,7 @@
+gunicorn
+gevent
+flask
+flask-sqlalchemy
+bootstrap-flask
+beautifulsoup4
+requests

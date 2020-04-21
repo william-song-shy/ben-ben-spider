@@ -1,0 +1,4 @@
+{% for i in benbens %}
+    <p>@<a href="/user/{{i.uid}}">{{ i.username }}<a></a>:{{ i.text|safe }}</p>
+    <p>发送时间是:{{i.time}}</p>
+{% endfor %}
