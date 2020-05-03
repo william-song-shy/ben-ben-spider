@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form_row,render_field %}
+​{% block body %} 
+<script type="text/javascript">
+	var d =  [];
+	var x = [];
+</script>
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<p class="text-center muted">
+				 <strong>今日共{{v}}条消息，以下是龙王榜</strong>
+			</p>
+			<p class="text-center muted">
+				 点击条数后面的迫害迫害用户！
+			</p>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							排名
+						</th>
+						<th>
+							uid
+						</th>
+						<th>
+							username
+						</th>
+						<th>
+							犇犇条数
+						</th>
+						<th>
+							迫害
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for i in b %}
+					<script type="text/javascript">
+			            d.push( "{{i.username}}");
+			            x.push( "{{i.count}}");
+						var xmlhttp{{i.uid}}=new XMLHttpRequest();
+			            xmlhttp{{i.uid}}.onreadystatechange=function()
+						{
+						    if (xmlhttp{{i.uid}}.readyState==4 && xmlhttp{{i.uid}}.status==200)
+						    {
+						        document.getElementById("pohai{{i.uid}}").innerHTML="迫害成功，共"+xmlhttp{{i.uid}}.responseText+"次";
+						        setTimeout("document.getElementById(\"pohai{{i.uid}}\").innerHTML=\"迫害\"",1500);
+						    }
+						    else
+						    {
+						    	if (xmlhttp{{i.uid}}.readyState==4)
+						    	{
+							    	document.getElementById("pohai{{i.uid}}").innerHTML="迫害失败:"+
+							    	xmlhttp{{i.uid}}.status;
+							    	setTimeout("document.getElementById(\"pohai{{i.uid}}\").innerHTML=\"迫害\"",1500);
+							    }
+						    }
+						}
+						function myFunction{{i.uid}}()
+						{
+							xmlhttp{{i.uid}}.open("GET","/persecute?uid="+{{i.uid}},true);
+							xmlhttp{{i.uid}}.send();
+						}
+    				</script>
+					<tr>
+						<td>
+							{% if loop.index==1 %}
+								<svg t="1588329338352" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1118" width="20" height="20"><path d="M824.891164 113.777778V28.444444a28.444444 28.444444 0 0 0-28.444444-28.444444H227.557831a28.444444 28.444444 0 0 0-28.444444 28.444444v85.333334H0.002276v227.555555a256 256 0 0 0 232.96 256A312.888889 312.888889 0 0 0 455.113387 762.595556V910.222222l-113.777778 113.777778h341.333333l-113.777778-113.777778v-147.626666A312.888889 312.888889 0 0 0 791.042276 597.333333 256 256 0 0 0 1024.002276 341.333333V113.777778zM113.780053 341.333333V227.555556h85.333334v244.337777A142.222222 142.222222 0 0 1 113.780053 341.333333z m796.444445 0a142.222222 142.222222 0 0 1-85.333334 130.56V227.555556h85.333334z" p-id="1119" fill="#FFD700"></path></svg>
+							{% endif %}
+							{% if 2<=loop.index<=5 %}
+								<svg t="1588329338352" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1118" width="20" height="20"><path d="M824.891164 113.777778V28.444444a28.444444 28.444444 0 0 0-28.444444-28.444444H227.557831a28.444444 28.444444 0 0 0-28.444444 28.444444v85.333334H0.002276v227.555555a256 256 0 0 0 232.96 256A312.888889 312.888889 0 0 0 455.113387 762.595556V910.222222l-113.777778 113.777778h341.333333l-113.777778-113.777778v-147.626666A312.888889 312.888889 0 0 0 791.042276 597.333333 256 256 0 0 0 1024.002276 341.333333V113.777778zM113.780053 341.333333V227.555556h85.333334v244.337777A142.222222 142.222222 0 0 1 113.780053 341.333333z m796.444445 0a142.222222 142.222222 0 0 1-85.333334 130.56V227.555556h85.333334z" p-id="1119" fill="#C0C0C0"></path></svg>
+							{% endif %}
+							{% if loop.index>=6 %}
+								<svg t="1588329338352" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1118" width="20" height="20"><path d="M824.891164 113.777778V28.444444a28.444444 28.444444 0 0 0-28.444444-28.444444H227.557831a28.444444 28.444444 0 0 0-28.444444 28.444444v85.333334H0.002276v227.555555a256 256 0 0 0 232.96 256A312.888889 312.888889 0 0 0 455.113387 762.595556V910.222222l-113.777778 113.777778h341.333333l-113.777778-113.777778v-147.626666A312.888889 312.888889 0 0 0 791.042276 597.333333 256 256 0 0 0 1024.002276 341.333333V113.777778zM113.780053 341.333333V227.555556h85.333334v244.337777A142.222222 142.222222 0 0 1 113.780053 341.333333z m796.444445 0a142.222222 142.222222 0 0 1-85.333334 130.56V227.555556h85.333334z" p-id="1119" fill="#B87333"></path></svg>
+							{% endif %}
+							#{{loop.index}}
+						</td>
+						<td>
+							{{i.uid}}
+						</td>
+						<td>
+							<a href="/user/{{i.uid}}">{{i.username}}</a>
+						</td>
+						<td>
+							{{i.count}}
+						</td>
+						<td id="pohai{{i.uid}}" onclick="myFunction{{i.uid}}()">
+							迫害
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			<p>如果看不全人名请鼠标悬浮在条上</p>
+			<div id="main" style="width: 100%;height:600px;text-align:center;"></div>
+			<script type="text/javascript">
+		        var myChart = echarts.init(document.getElementById('main'));
+		        var option = {
+		            title: {
+		                text: '可视化排行榜'
+		            },
+		            tooltip: {},
+		            legend: {
+		                data:['犇犇条数']
+		            },
+		            xAxis: {},
+		            yAxis: 
+		            {
+		            	data:d.reverse()
+		            },
+		            series: [{
+		                name: '犇犇条数',
+		                type: 'bar',
+		                data:x.reverse()
+		            }]
+		        };
+		        myChart.setOption(option);
+    		</script>
+			<form method="POST">
+	            {{ form.csrf_token }}
+	            {{ render_form_row ([form.username],col_class_default='col-md-2')}}
+	            {{ render_field(form.submit) }}
+	        </form>
+		</div>
+	</div>
+</div>
+{% endblock body %}

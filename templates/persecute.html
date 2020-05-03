@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block body %}
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h2 class="text-center muted">
+				 总排行榜
+			</h2>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							排名
+						</th>
+						<th>
+							uid
+						</th>
+						<th>
+							username
+						</th>
+						<th>
+							被迫害次数
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in messages %}
+						<tr>
+							<td>
+								#{{(pagination.page-1)*20+loop.index}}
+							</td>
+							<td>
+								{{i.uid}}
+							</td>
+							<td>
+								<a href="/user/{{i.uid}}">{{i.username}}</a>
+							</td>
+							<td>
+								{{i.beipohai}}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		    {{ render_pagination(pagination) }}
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -5,3 +5,4 @@ flask-sqlalchemy
 bootstrap-flask
 beautifulsoup4
 requests
+bootstrap-flask

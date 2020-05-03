@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 import time
+from sqlalchemy import extract
 from app import db
-s = set()
 class BenBen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String,index=True)
@@ -11,12 +11,15 @@ class BenBen(db.Model):
     uid = db.Column(db.Integer)
     time=db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('luogu_user.id'))
+    user=db.relationship('LuoguUser',uselist=False,backref='BenBen')
 class LuoguUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
     uid = db.Column(db.Integer,index=True)
     benbens=db.relationship('BenBen')
-
+    beipohai = db.Column(db.Integer,default=0)
+    allow_paiming = db.Column(db.Boolean,default=True)
+    
 def jiexi (r):
     html=r.text
     soup = BeautifulSoup(html, 'html.parser')
@@ -34,7 +37,6 @@ def jiexi (r):
         stime=stime[1]+' '+stime[2]
         stime=datetime.datetime.strptime(stime, '%Y-%m-%d %H:%M:%S\n')
         if BenBen.query.filter_by(text=text,username=username,uid=int(uid),time=stime).all():
-            print ('IEE')
             continue
         abb=BenBen()
         abb.text=text
@@ -57,15 +59,18 @@ headers={'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537
 
 def pa ():
     r=requests.get('https://www.luogu.com.cn/feed/all',headers=headers)
-    data = open("luogubenebn.txt", "w")
-    data.write( str(s) )
-    data.close()
     return jiexi(r)
 
 def doing():
     while True:
-        pa()
-        time.sleep(5)
+        try:
+            pa()
+            time.sleep(5)
+        except BaseException as reason:
+            fo = open("foo.txt", "w+")
+            fo.write(str(reason))
+            fo.close()
+
 
 
     
