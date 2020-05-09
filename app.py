@@ -1,23 +1,20 @@
-import datetime
-import threading
-
-import click
-from flask import (Flask, abort, flash, jsonify, redirect, render_template,
-                   request, url_for)
-from flask_bootstrap import Bootstrap
-from luogu_spider import doing, BenBen, LuoguUser
-from flask_wtf import FlaskForm
-from sqlalchemy import desc, extract, func
-from wtforms import DateTimeField, StringField, SubmitField
-from wtforms.validators import DataRequired, Length
-
-from luogu_spider import BenBen, LuoguUser, doing
-
-from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, abort
+from flask import Flask,render_template
+from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,abort
 import threading
-from sqlalchemy import extract, func, desc
+from sqlalchemy import extract,func,desc
+import datetime
+app = Flask(__name__)
+app.secret_key = '11451419260817avdgsjrhsjaj4'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+from luogu_spider import doing,BenBen,LuoguUser
+from flask_bootstrap import Bootstrap
+from flask_wtf import FlaskForm
+from wtforms import SubmitField, StringField
+from wtforms.validators import DataRequired,Length
+import click
 bootstrap = Bootstrap(app)
 thread = threading.Thread(target=doing)
 thread.setDaemon(True)
