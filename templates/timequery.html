@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form_row,render_field %}
+​{% block body %} 
+	<form method="POST">
+					{{ form.csrf_token }}
+					{{ render_form_row ([form.begin,form.end],col_class_default='col-md-2')}}
+					{{ render_field(form.submit) }}
+	</form>
+{% endblock body %}
