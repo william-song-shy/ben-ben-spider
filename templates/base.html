@@ -1,6 +1,4 @@
-{% from 'macros.html' import render_nav_item %}
-{% from 'bootstrap/utils.html' import render_flashed_messages %}
-{% from 'bootstrap/utils.html' import render_messages %}
+{% from 'macros.html' import render_nav_item ,render_messages%}
 <!doctype html>
 <html>
 	<head>
@@ -11,6 +9,7 @@
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='semantic/semantic.css')}}">
 		<script src="{{url_for('static',filename='semantic/semantic.js')}}"></script>
+		{{ bootstrap.load_js() }}
 	</head>
 	<body>
 		<div class="ui fixed large menu">
@@ -20,14 +19,13 @@
 				{{ render_nav_item('help', 'Q&A') }}
 			</div>
 		</div>
-		<main class="container">
+		<div class="ui container" style="margin-top: 50px; ">
 	        {{ render_messages(container=False, dismissible=True) }}
 	        {% block content %}{% endblock %}
-    	</main>
+    	</div>
 		{% block body %}
 
 		{%endblock%}
-		{{ bootstrap.load_js() }}
 	</body>
 
 </html>

@@ -4,3 +4,29 @@
        {{text}}
     </a>
 {% endmacro %}
+
+{% macro render_messages(messages=None, container=False, transform={
+     'critical': 'negative',
+     'error': 'negative',
+     'info': 'info',
+     'warning': 'warning',
+     'debug': ' ',
+     'notset': ' ',
+     'message': ' ',
+     'negative':'danger',
+     'danger':'negative'
+    }, default_category='primary', dismissible=False, dismiss_animate=False) -%}
+   
+    {% with messages = messages or get_flashed_messages(with_categories=True) -%}
+	    {% if messages -%} 
+	    	{# don't output anything if there are no messages #}
+		    {% for cat, msg in messages %}
+		        <div class="ui {{ transform.get(cat.lower(), cat or default_category) }} message">
+		  			<i class="close icon"></i>
+		  				<div class="header">
+		           			{{ msg }}
+		         		</div>
+		    {%- endfor -%}
+	    {% endif -%}
+    {% endwith -%}
+{% endmacro -%}
