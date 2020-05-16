@@ -8,8 +8,8 @@
 		<script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='semantic/semantic.css')}}">
-		<script src="{{url_for('static',filename='semantic/semantic.js')}}"></script>
 		{{ bootstrap.load_js() }}
+		<script src="{{url_for('static',filename='semantic/semantic.js')}}"></script>
 	</head>
 	<body>
 		<div class="ui fixed large menu">
@@ -21,11 +21,8 @@
 		</div>
 		<div class="ui container" style="margin-top: 50px; ">
 	        {{ render_messages(container=False, dismissible=True) }}
-	        {% block content %}{% endblock %}
+	        {% block body %}{% endblock %}
     	</div>
-		{% block body %}
-
-		{%endblock%}
 	</body>
 
 </html>
