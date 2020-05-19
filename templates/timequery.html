@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/form.html' import render_form_row,render_field %}
 ​{% block body %} 
-	<div class="col-md-12 column">
-		<p class="text-center muted">
-			时间格式：%Y-%m-%d %H:%M:%S<br>如:1919-08-10 11:45:14<br>与洛谷犇犇的时间格式相同<br>对于月，日，时，分，秒，一位数应该在前补0，如1919-8-10 11:45:14就是错误的。
-		</p>
-		<form method="POST">
-						{{ form.csrf_token }}
-						{{ render_form_row ([form.begin,form.end],col_class_default='col-md-2')}}
-						{{ render_field(form.submit) }}
-		</form>
-	</div>
+	<p>
+		时间格式：%Y-%m-%d %H:%M:%S<br>如:1919-08-10 11:45:14<br>与洛谷犇犇的时间格式相同<br>对于月，日，时，分，秒，一位数应该在前补0，如1919-8-10 11:45:14就是错误的。
+	</p>
+	<form method="POST">
+					{{ form.csrf_token }}
+					{{ render_form_row ([form.begin,form.end],col_class_default='col-md-2')}}
+					{{ render_field(form.submit) }}
+	</form>
 {% endblock body %}
