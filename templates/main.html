@@ -1,20 +1,14 @@
 {% extends 'base.html' %}
 ​{% block body %} 
-<div class="container">
-	<div class="row clearfix">
-		<div class="col-md-12 column">
-			<p class="text-center muted">
-				 <strong>今日共{{v}}条消息,排名是第{{pm}}名,被迫害了{{ph}}次。</strong>
-			</p>
-            {% for i in benbens %}
-			<p class="text-center">
-				 @<a href="/user/{{i.uid}}">{{ i.username }}<a></a>:{{ i.text|safe }}
-			</p>
-            <p class="text-center">
-				 发送时间是:{{i.time}}
-            </p>
-            {% endfor %}
-		</div>
-	</div>
-</div>
+	<p style="text-align: center;">
+		<strong>今日共{{v}}条消息,排名是第{{pm}}名,被迫害了{{ph}}次。</strong>
+	</p>
+    {% for i in benbens %}
+		<p style="text-align: center;">
+			@<a href="/user/{{i.uid}}">{{ i.username }}<a></a>:{{ i.text|safe }}
+		</p>
+        <p style="text-align: center;">
+			 发送时间是:{{i.time}}
+        </p>
+    {% endfor %}
 {% endblock body %}
