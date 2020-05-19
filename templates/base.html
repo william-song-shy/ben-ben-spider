@@ -1,6 +1,4 @@
-{% from 'bootstrap/nav.html' import render_nav_item %}
-{% from 'bootstrap/utils.html' import render_flashed_messages %}
-{% from 'bootstrap/utils.html' import render_messages %}
+{% from 'macros.html' import render_nav_item ,render_messages%}
 <!doctype html>
 <html>
 	<head>
@@ -8,24 +6,23 @@
 		<title>咕咕咕？咕咕咕！</title>
 		<meta charset="utf-8">
 		<script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
-		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">		
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='semantic/semantic.css')}}">
+		{{ bootstrap.load_js() }}
+		<script src="{{url_for('static',filename='semantic/semantic.js')}}"></script>
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<div class="navbar-nav mr-auto">
+		<div class="ui fixed large menu">
+			<div class="ui container">
 				{{ render_nav_item('main', 'Home') }}
 				{{ render_nav_item('ranklist', 'Ranklist') }}
 				{{ render_nav_item('help', 'Q&A') }}
 			</div>
-		</nav>
-		<main class="container">
+		</div>
+		<div class="ui container" style="margin-top: 50px; ">
 	        {{ render_messages(container=False, dismissible=True) }}
-	        {% block content %}{% endblock %}
-    	</main>
-		{% block body %}
-
-		{%endblock%}
-		{{ bootstrap.load_js() }}
+	        {% block body %}{% endblock %}
+    	</div>
 	</body>
 
 </html>
