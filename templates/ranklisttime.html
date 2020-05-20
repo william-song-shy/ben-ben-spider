@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/pagination.html' import render_pagination %}
-{% block title %}迫害排行榜{% endblock %}
+{%block title %}指定时间段的排行榜{% endblock %}
 {% block body %}
-	<h2 class="ui header" style="text-align: center;">
-			迫害排行榜
+<h2 class="ui header" style="text-align: center;">
+			从{{begin}}到{{end}}的排行榜
 	</h2>
 	<table class="ui celled table" style="text-align: center;">
 		<thead>
@@ -18,7 +18,7 @@
 					username
 				</th>
 				<th>
-					被迫害次数
+					犇犇条数
 				</th>
 			</tr>
 		</thead>
@@ -45,7 +45,7 @@
 						<a href="/user/{{i.uid}}">{{i.username}}</a>
 					</td>
 					<td>
-						{{i.beipohai}}
+						{{i.count}}
 					</td>
 				</tr>
 			{% endfor %}

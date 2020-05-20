@@ -157,7 +157,7 @@ def ranklist():
                                                                                              LuoguUser.allow_paiming == True).group_by(BenBen.uid).order_by(desc(func.count())).paginate(page,
                                                                                                                                                                                          per_page=20,
                                                                                                                                                                                          error_out=False)
-        return render_template('ranklist.html', pagination=p, messages=p.items)
+        return render_template('ranklisttime.html', pagination=p, messages=p.items,begin=begin,end=end)
     cur = datetime.datetime.now()
     p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
         extract('year', BenBen.time) == cur.year,

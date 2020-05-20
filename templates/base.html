@@ -3,7 +3,7 @@
 <html>
 	<head>
 	    {{ bootstrap.load_css() }}
-		<title>咕咕咕？咕咕咕！</title>
+		<title>{% block title %}{% endblock %}</title>
 		<meta charset="utf-8">
 		<script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
