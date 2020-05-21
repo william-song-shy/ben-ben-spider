@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block title %} 用户界面 {% endblock %}
 ​{% block body %} 
 	<p style="text-align: center;">
 		<strong>{% if v != 0 %}今日共{{v}}条消息，排名是第{{pm}}名，{% else %}今天无消息，{% endif %}{% if ph != 0%}被迫害了{{ph}}次{% else %}没有被迫害过{% endif %}。</strong>
