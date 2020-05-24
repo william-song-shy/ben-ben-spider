@@ -4,6 +4,7 @@ from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,
 import threading
 from sqlalchemy import extract,func,desc
 import datetime
+import random
 app = Flask(__name__)
 app.secret_key = '11451419260817avdgsjrhsjaj4'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
@@ -140,6 +141,30 @@ def jiefengyonghu(username):
     db.session.commit()
     click.echo('成功.')
 
+@app.cli.command()
+@click.option('--count', prompt=True)
+def fakebenbens(count):
+	click.echo('开始生成')
+	count=int(count)
+	benbenslist=['I AK IOI','洛谷真棒！','咕咕咕','冒泡','kkkAKIOI']
+	uids={'songhongyi':122079,'kkksc03':1,'chen_zhe':8457,'一扶苏一':65363}
+	usernamelist=['kkksc03','songhongyi','chen_zhe','一扶苏一']
+	for i in range (count):
+		b=random.choice(benbenslist)
+		p=random.choice(usernamelist)
+		user=LuoguUser.query.filter_by(username=p).first()
+		if not user:
+			user = LuoguUser(username=p, uid=uids[p])
+			db.session.add(user)
+		abb = BenBen()
+		abb.text = b
+		abb.username = p
+		abb.uid = user.uid
+		abb.time = datetime.datetime.now()
+		user.benbens.append(abb)
+		db.session.add(abb)
+		db.session.commit()
+		click.echo("成功生成了一条")
 
 @app.route("/ranklist")
 def ranklist():
