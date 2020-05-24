@@ -147,18 +147,13 @@ def fakebenbens(count):
 	click.echo('开始生成')
 	count=int(count)
 	benbenslist=['I AK IOI','洛谷真棒！','咕咕咕','冒泡','kkkAKIOI']
-	uids={'songhongyi':122079,'kkksc03':1,'chen_zhe':8457,'一扶苏一':65363}
-	usernamelist=['kkksc03','songhongyi','chen_zhe','一扶苏一']
+	userlist=LuoguUser.query.all()
 	for i in range (count):
 		b=random.choice(benbenslist)
-		p=random.choice(usernamelist)
-		user=LuoguUser.query.filter_by(username=p).first()
-		if not user:
-			user = LuoguUser(username=p, uid=uids[p])
-			db.session.add(user)
+		user=random.choice(userlist)
 		abb = BenBen()
 		abb.text = b
-		abb.username = p
+		abb.username = user.username
 		abb.uid = user.uid
 		abb.time = datetime.datetime.now()
 		user.benbens.append(abb)
