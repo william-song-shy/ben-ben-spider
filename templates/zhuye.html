@@ -3,8 +3,20 @@
 {% block title %}主页{% endblock %}
 ​{% block body %} 
 <script type="text/javascript">
-	var d =  [];
-	var x = [];
+	$(document).ready(function(){
+		$(".pohai").click(function(){
+			var id=this.id
+			$.post("/persecute?uid="+id,function(data,status){
+				if (status=="success")
+					$("#"+id).html("迫害成功，共"+data+"次");
+				else
+					$("#"+id).html("迫害失败:"+status);
+				setTimeout('$("#'+id+'").html("迫害")',1500);
+			})
+		})
+	})
+	d=[];
+	x=[];
 </script>
 			<p style="text-align: center;">
 				 <strong>今日共{{v}}条消息，以下是龙王榜</strong>
@@ -37,30 +49,7 @@
 					<script type="text/javascript">
 			            d.push( "{{i.username}}");
 			            x.push( "{{i.count}}");
-						var xmlhttp{{i.uid}}=new XMLHttpRequest();
-			            xmlhttp{{i.uid}}.onreadystatechange=function()
-						{
-						    if (xmlhttp{{i.uid}}.readyState==4 && xmlhttp{{i.uid}}.status==200)
-						    {
-						        document.getElementById("pohai{{i.uid}}").innerHTML="迫害成功，共"+xmlhttp{{i.uid}}.responseText+"次";
-						        setTimeout("document.getElementById(\"pohai{{i.uid}}\").innerHTML=\"迫害\"",1500);
-						    }
-						    else
-						    {
-						    	if (xmlhttp{{i.uid}}.readyState==4)
-						    	{
-							    	document.getElementById("pohai{{i.uid}}").innerHTML="迫害失败:"+
-							    	xmlhttp{{i.uid}}.status;
-							    	setTimeout("document.getElementById(\"pohai{{i.uid}}\").innerHTML=\"迫害\"",1500);
-							    }
-						    }
-						}
-						function myFunction{{i.uid}}()
-						{
-							xmlhttp{{i.uid}}.open("POST","/persecute?uid="+{{i.uid}},true);
-							xmlhttp{{i.uid}}.send();
-						}
-    				</script>
+			        </script>
 					<tr>
 						<td>
 							{% if loop.index==1 %}
@@ -83,7 +72,7 @@
 						<td>
 							{{i.count}}
 						</td>
-						<td id="pohai{{i.uid}}" onclick="myFunction{{i.uid}}()">
+						<td class="pohai" id="{{i.uid}}">
 							迫害
 						</td>
 					</tr>
