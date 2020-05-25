@@ -20,7 +20,6 @@ bootstrap = Bootstrap(app)
 thread = threading.Thread(target=doing)
 thread.setDaemon(True)
 thread.start()
-db.create_all()
 @app.route("/", methods=['GET', 'POST'])
 def main():
     cur = datetime.datetime.now()
