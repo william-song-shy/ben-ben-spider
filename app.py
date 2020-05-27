@@ -5,9 +5,20 @@ import threading
 from sqlalchemy import extract,func,desc
 import datetime
 import random
+from os import environ, path
+from dotenv import load_dotenv
+basedir = path.abspath(path.dirname(__file__))
+load_dotenv(path.join(basedir, '.env'))
 app = Flask(__name__)
 app.secret_key = '11451419260817avdgsjrhsjaj4'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
+DIALECT = 'mysql'
+DRIVER = 'pymysql'
+USERNAME = 'root'
+PASSWORD = environ.get('mysqlpassword')
+HOST = '114.116.248.90'
+PORT = '3306'
+DATABASE = 'benben'
+app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT,DATABASE)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 from luogu_spider import doing,BenBen,LuoguUser

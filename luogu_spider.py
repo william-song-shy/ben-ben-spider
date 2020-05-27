@@ -8,8 +8,8 @@ from app import db
 
 class BenBen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String, index=True)
-    username = db.Column(db.String)
+    text = db.Column(db.String(100), index=True)
+    username = db.Column(db.String(50))
     uid = db.Column(db.Integer)
     time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('luogu_user.id'))
@@ -18,7 +18,7 @@ class BenBen(db.Model):
 
 class LuoguUser(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
+    username = db.Column(db.String(50))
     uid = db.Column(db.Integer, index=True)
     benbens = db.relationship('BenBen')
     beipohai = db.Column(db.Integer, default=0)
