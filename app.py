@@ -5,6 +5,7 @@ import threading
 from sqlalchemy import extract,func,desc
 import datetime
 import random
+import re
 from os import environ, path
 from dotenv import load_dotenv
 basedir = path.abspath(path.dirname(__file__))
@@ -207,3 +208,34 @@ def timequery():
     if form.validate_on_submit():
         return redirect("/ranklist?begin={}&end={}".format(form.begin.data, form.end.data))
     return render_template("timequery.html", form=form)
+
+class CheckPaste ():
+	def __init__ (self):
+		pass
+	def __call__ (self,form,field):
+		t=field.data
+		if not re.match('^[a-z0-9]{8}',t) or len(t)!=8:
+			raise ValidationError('不符合洛谷云剪切板的格式')
+			return
+		headers = {'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"}
+		k=requests.get('https://www.luogu.com.cn/paste/{}?_contentOnly=1'.format(t),headers=headers)
+		t=k.json()
+		if t['code']==403:
+			raise ValidationError('这是一个非公开的剪贴板')
+			return
+		if t['code']==404:
+			raise ValidationError('这个剪贴板不存在')
+			return
+		cur = datetime.datetime.now()
+		cjsj=t['currentData']['paste']['time']
+		cjsj=datetime.datetime.fromtimestamp(cjsj)
+		if (cur.cjsj).days>=1:
+			raise ValidationError('这个剪贴板的创建时间过早')
+			return
+		if a['currentData']['paste']['user']['uid']!=form.luoguid.data:
+			raise ValidationError('创建者不是您')
+			return
+		text=t['currentData']['paste']['data']
+		if text!=form.username.data:
+			raise ValidationError('内容错误')
+			return
