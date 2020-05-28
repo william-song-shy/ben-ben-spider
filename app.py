@@ -86,11 +86,13 @@ def user(uid):
         extract('day', BenBen.time) == cur.day,
         BenBen.uid == uid
     ).count()
-    pmq = db.session.execute("select count(*) from (select uid,username,count(*) as count from ben_ben where time>=datetime('now','start of day','+0 day') and time<datetime('now','start of day','+1 day') group by uid order by count desc) where count > {}".format(v))
-    pm = 0
-    for i in pmq:
-        pm += i[0]
-    return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm, ph=ph)
+    pm= BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
+        extract('year', BenBen.time) == cur.year,
+        extract('month', BenBen.time) == cur.month,
+        extract('day', BenBen.time) == cur.day,
+        LuoguUser.allow_paiming == True
+    ).group_by(BenBen.uid).order_by(desc(func.count())).having(func.count()>v).count()
+    return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph)
 
 
 @app.route("/help")
