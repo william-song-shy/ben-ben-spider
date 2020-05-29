@@ -28,6 +28,8 @@ from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField,DateTimeField
 from wtforms.validators import DataRequired,Length
 import click
+from flask_migrate import Migrate
+migrate=Migrate(app,db)
 bootstrap = Bootstrap(app)
 thread = threading.Thread(target=doing)
 thread.setDaemon(True)
