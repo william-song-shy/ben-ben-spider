@@ -8,3 +8,4 @@ requests
 bootstrap-flask
 pymysql
 python-dotenv
+flask-migrate
