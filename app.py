@@ -182,9 +182,12 @@ def ranklist():
     persecute = request.args.get('persecute', 0, type=int)
     begin = request.args.get('begin', "", type=str)
     end = request.args.get('end', "", type=str)
+    _contentOnly=request.args.get('_contentOnly',0,type=int)
     if persecute:
         p = LuoguUser.query.filter(LuoguUser.beipohai != 0).order_by(
             desc(LuoguUser.beipohai)).paginate(page, per_page=20, error_out=False)
+        if _contentOnly==1:
+            return jsonify(p.items)
         return render_template('persecute.html', pagination=p, messages=p.items)
     if begin != "" and end != "":
         p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'),
@@ -199,6 +202,8 @@ def ranklist():
         extract('month', BenBen.time) == cur.month,
         extract('day', BenBen.time) == cur.day,
         LuoguUser.allow_paiming == True).group_by(BenBen.uid).order_by(desc(func.count())).paginate(page, per_page=20, error_out=False)
+    if _contentOnly==1:
+            return jsonify(p.items)
     return render_template('ranklist.html', pagination=p, messages=p.items)
 
 
