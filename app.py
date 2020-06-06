@@ -5,7 +5,9 @@ import threading
 from sqlalchemy import extract,func,desc
 import datetime
 import random
+import markdown
 import re
+import requests
 from os import environ, path
 from dotenv import load_dotenv
 basedir = path.abspath(path.dirname(__file__))
@@ -249,3 +251,33 @@ class CheckPaste ():
 		if text!=form.username.data:
 			raise ValidationError('内容错误')
 			return
+
+@app.route("/api/checkbenben")
+def api_checkbenben():
+	uid=request.args.get('uid',-1,type=int)
+	headers = {'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"}
+	benbens = requests.get('https://www.luogu.com.cn/api/feed/list?user={}'.format(uid),headers=headers).json()
+	benbens=benbens['feeds']['result']
+	for i in benbens[::-1]:
+		text=markdown.markdown(i['content'])
+		username=i['user']['name']
+		stime=datetime.datetime.fromtimestamp(i['time'])
+		if BenBen.query.filter_by(text=text, username=username, uid=int(uid), time=stime).first():
+			continue
+		abb = BenBen()
+		abb.text = text.replace('<p>',"").replace('</p>',"")
+		abb.username = username
+		abb.uid = uid
+		abb.time = stime
+		user = LuoguUser.query.filter_by(uid=uid).first()
+		if user:
+			user.benbens.append(abb)
+			if user.username != username:
+				user.username = username
+		else:
+			user = LuoguUser(username=username, uid=uid)
+			db.session.add(user)
+			user.benbens.append(abb)
+		db.session.add(abb)
+		db.session.commit()
+	return ""
