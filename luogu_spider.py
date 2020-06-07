@@ -8,7 +8,7 @@ from app import db
 
 class BenBen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(100), index=True)
+    text = db.Column(db.Text)
     username = db.Column(db.String(50))
     uid = db.Column(db.Integer)
     time = db.Column(db.DateTime)
