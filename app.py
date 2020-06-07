@@ -262,7 +262,7 @@ def api_checkbenben():
 		text=markdown.markdown(i['content'])
 		username=i['user']['name']
 		stime=datetime.datetime.fromtimestamp(i['time'])
-		if BenBen.query.filter_by(text=text, username=username, uid=int(uid), time=stime).first():
+		if BenBen.query.filter_by(uid=uid, time=stime).all():
 			continue
 		abb = BenBen()
 		abb.text = text.replace('<p>',"").replace('</p>',"")
