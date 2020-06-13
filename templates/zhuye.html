@@ -106,7 +106,37 @@
     		</script>
 			<form method="POST">
 	            {{ form.csrf_token }}
-	            {{ render_form_row ([form.username],col_class_default='col-md-2')}}
-	            {{ render_field(form.submit) }}
+	            <div class="ui labeled input" style="text-align: center;">
+					<div class="ui label">
+						用户名:
+					</div>
+					<input id="username" name="username" required="" type="text" value="">
+				</div>
+	            <input class = "ui button" id="submit" name="submit" type="submit" value="查询">
 	        </form>
+	        <p style="text-align: center;">
+				 输入UID可以同步最新的20条犇犇！
+			</p>
+	        <div class="ui labeled input" style="text-align: center;">
+				<div class="ui label">
+					uid:
+				</div>
+				<input type="text" placeholder="UID" id="uid">
+			</div>
+	        <button class="ui button" id="check">
+				更新
+			</button>
+			<script type="text/javascript">
+	        	$("#check").on('click',function(){
+	        		$.get('/api/checkbenben?uid='+$('#uid').val(),function(data,status){
+	        			if (status="success")
+	        			{
+	        				$('#check').text("成功")
+	        				setTimeout(function(){
+	        					$('#check').text("更新")
+	        				},500)
+	        			}
+	        		})
+	        	})
+	        </script>
 {% endblock body %}
