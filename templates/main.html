@@ -12,11 +12,11 @@
 	</a>
 	<script type="text/javascript">
     	$("#check").on('click',function(){
-    		$(this).attr("class", "ui loading button");
+    		$(this).attr("class", "ui primary loading button");
     		$.get('/api/checkbenben?uid={{uid}}',function(data,status){
     			if (status="success")
     			{
-    				$('#check').attr("class", "ui button")
+    				$('#check').attr("class", "ui primary button")
     				if (data!=0)
 	        		{
 	        			$('#check').text("成功同步了今天的"+data+"条新消息")
