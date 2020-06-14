@@ -192,6 +192,8 @@ def ranklist():
             desc(LuoguUser.beipohai)).paginate(page, per_page=20, error_out=False)
         return render_template('persecute.html', pagination=p, messages=p.items)
     if begin != 0 and end != 0:
+        begin=datetime.datetime.fromtimestamp (begin)
+        end=datetime.datetime.fromtimestamp (end)
         p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'),
                                                          BenBen.username, BenBen.uid).filter(BenBen.time.between(begin, end),
                                                                                              LuoguUser.allow_paiming == True).group_by(BenBen.uid).order_by(desc(func.count())).paginate(page,
@@ -219,7 +221,7 @@ def timequery():
         submit = SubmitField('查询')
     form = timequeryform()
     if form.validate_on_submit():
-        return redirect("/ranklist?begin={}&end={}".format(time.mktime(form.begin.data.timetuple()),time.mktime(form.end.data.timetuple())))
+        return redirect("/ranklist?begin={}&end={}".format(int (time.mktime(form.begin.data.timetuple())),int (time.mktime(form.end.data.timetuple()))))
     return render_template("timequery.html", form=form)
 
 class CheckPaste ():
