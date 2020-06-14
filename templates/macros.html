@@ -31,3 +31,49 @@
 	    {% endif -%}
     {% endwith -%}
 {% endmacro -%}
+{% macro _arg_url_for(endpoint, base) %}
+    {%- with kargs = base.copy() -%}
+        {%- do kargs.update(kwargs) -%}
+        {{ url_for(endpoint, **kargs) }}
+    {%- endwith %}
+{% endmacro %}
+
+{% macro render_pagination(pagination) %}
+	{% set url_args = {} %}
+	{% do url_args.update(request.args) %}
+	<div class="ui pagination menu">
+		{% if pagination.has_prev %}
+			<a class="item" href="{{_arg_url_for(request.endpoint, url_args, page=1)}}">
+				<i class="angle double left icon"></i>
+			</a>
+			<a class="item" href="{{_arg_url_for(request.endpoint, url_args, page=pagination.prev_num)}}">
+				<i class="angle left icon"></i>
+			</a>
+		{% endif %}
+		{% for page in pagination.iter_pages() %}
+			{% if page %}
+				{% if page != pagination.page %}
+					<a class="item" href="{{_arg_url_for(request.endpoint, url_args, page=page)}}">
+				    	{{page}}
+				    </a>
+				{% else %}
+					<a class="active item" href="{{_arg_url_for(request.endpoint, url_args, page=page)}}">
+				    	{{page}}
+				    </a>
+				{% endif %}
+			{% else %}
+				<div class="disabled item">
+					...
+				</div>
+			{% endif %}
+		{% endfor %}
+		{% if pagination.has_next %}
+			<a class="item" href="{{_arg_url_for(request.endpoint, url_args, page=pagination.next_num)}}">
+				<i class="angle right icon"></i>
+			</a>
+			<a class="item" href="{{_arg_url_for(request.endpoint, url_args, page=pagination.pages)}}">
+				<i class="angle double right icon"></i>
+			</a>
+		{% endif %}
+	</div>
+{% endmacro %}
