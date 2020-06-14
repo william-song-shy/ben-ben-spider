@@ -7,6 +7,7 @@ import datetime
 import random
 import markdown
 import re
+import time
 import requests
 from os import environ, path
 from dotenv import load_dotenv
@@ -183,14 +184,14 @@ def fakebenbens(count):
 def ranklist():
     page = request.args.get('page', 1, type=int)
     persecute = request.args.get('persecute', 0, type=int)
-    begin = request.args.get('begin', "", type=str)
-    end = request.args.get('end', "", type=str)
+    begin = request.args.get('begin', 0, type=int)
+    end = request.args.get('end', 0, type=int)
     _contentOnly=request.args.get('_contentOnly',0,type=int)
     if persecute:
         p = LuoguUser.query.filter(LuoguUser.beipohai != 0).order_by(
             desc(LuoguUser.beipohai)).paginate(page, per_page=20, error_out=False)
         return render_template('persecute.html', pagination=p, messages=p.items)
-    if begin != "" and end != "":
+    if begin != 0 and end != 0:
         p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'),
                                                          BenBen.username, BenBen.uid).filter(BenBen.time.between(begin, end),
                                                                                              LuoguUser.allow_paiming == True).group_by(BenBen.uid).order_by(desc(func.count())).paginate(page,
@@ -218,7 +219,7 @@ def timequery():
         submit = SubmitField('查询')
     form = timequeryform()
     if form.validate_on_submit():
-        return redirect("/ranklist?begin={}&end={}".format(form.begin.data, form.end.data))
+        return redirect("/ranklist?begin={}&end={}".format(time.mktime(form.begin.data.timetuple()),time.mktime(form.end.data.timetuple())))
     return render_template("timequery.html", form=form)
 
 class CheckPaste ():
