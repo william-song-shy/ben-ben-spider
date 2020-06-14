@@ -258,6 +258,8 @@ def api_checkbenben():
 	headers = {'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"}
 	benbens = requests.get('https://www.luogu.com.cn/api/feed/list?user={}'.format(uid),headers=headers).json()
 	benbens=benbens['feeds']['result']
+	cur = datetime.datetime.now()
+	cnt=0
 	for i in benbens[::-1]:
 		text=markdown.markdown(i['content'])
 		username=i['user']['name']
@@ -280,4 +282,6 @@ def api_checkbenben():
 			user.benbens.append(abb)
 		db.session.add(abb)
 		db.session.commit()
-	return ""
+		if stime.date() == cur.date():
+			cnt+=1
+	return str(cnt)

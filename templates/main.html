@@ -12,7 +12,7 @@
     		$.get('/api/checkbenben?uid={{uid}}',function(data,status){
     			if (status="success")
     			{
-    				$('#check').text("成功")
+    				$('#check').text("成功同步了今天的"+data+"条新消息")
     				setTimeout(function(){
     					$('#check').text("更新")
     				},500)
