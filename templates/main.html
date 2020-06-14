@@ -5,8 +5,11 @@
 		<strong>{% if v != 0 %}今日共{{v}}条消息，排名是第{{pm}}名，{% else %}今天无消息，{% endif %}{% if ph != 0%}被迫害了{{ph}}次{% else %}没有被迫害过{% endif %}。</strong>
 	</p>
 	<button class="ui button" id="check">
-			更新
+		更新
 	</button>
+	<a href="https://www.luogu.com.cn/user/{{uid}}" class="ui button">
+		前往洛谷个人主页
+	</a>
 	<script type="text/javascript">
     	$("#check").on('click',function(){
     		$.get('/api/checkbenben?uid={{uid}}',function(data,status){
