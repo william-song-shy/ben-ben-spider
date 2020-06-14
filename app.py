@@ -97,7 +97,7 @@ def user(uid):
         extract('day', BenBen.time) == cur.day,
         LuoguUser.allow_paiming == True
     ).group_by(BenBen.uid).order_by(desc(func.count())).having(func.count()>v).count()
-    return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph)
+    return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid)
 
 
 @app.route("/help")
