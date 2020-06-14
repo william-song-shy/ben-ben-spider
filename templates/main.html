@@ -12,10 +12,19 @@
 	</a>
 	<script type="text/javascript">
     	$("#check").on('click',function(){
+    		$(this).attr("class", "ui loading button");
     		$.get('/api/checkbenben?uid={{uid}}',function(data,status){
     			if (status="success")
     			{
-    				$('#check').text("成功同步了今天的"+data+"条新消息")
+    				$('#check').attr("class", "ui button")
+    				if (data!=0)
+	        		{
+	        			$('#check').text("成功同步了今天的"+data+"条新消息")
+	        		}
+	        			else
+	        		{
+	        			$('#check').text("今天无新消息")
+	        		}
     				setTimeout(function(){
     					$('#check').text("更新")
     				},500)
