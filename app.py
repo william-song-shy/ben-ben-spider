@@ -188,8 +188,10 @@ def ranklist():
     end = request.args.get('end', 0, type=int)
     _contentOnly=request.args.get('_contentOnly',0,type=int)
     if persecute:
-        p = LuoguUser.query.filter(LuoguUser.beipohai != 0).order_by(
+        p = LuoguUser.query.with_entities(LuoguUser.username,LuoguUser.uid,LuoguUser.beipohai).filter(LuoguUser.beipohai != 0).order_by(
             desc(LuoguUser.beipohai)).paginate(page, per_page=20, error_out=False)
+        if _contentOnly==1:
+            return jsonify(p.items)
         return render_template('persecute.html', pagination=p, messages=p.items)
     if begin != 0 and end != 0:
         begin=datetime.datetime.fromtimestamp (begin)
