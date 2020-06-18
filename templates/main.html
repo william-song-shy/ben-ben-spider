@@ -7,6 +7,9 @@
 	<button class="ui primary button" id="check">
 		更新
 	</button>
+	<button class="ui primary button" id="pohai">
+		迫害Ta
+	</button>
 	<a href="https://www.luogu.com.cn/user/{{uid}}" class="ui primary button">
 		前往洛谷个人主页
 	</a>
@@ -31,6 +34,15 @@
     			}
     		})
     	})
+    	$("#pohai").on('click',function(){
+			$.post("/persecute?uid="+{{uid}},function(data,status){
+				if (status=="success")
+					$("#pohai").html("迫害成功，共"+data+"次");
+				else
+					$("#pohai").html("迫害失败:"+status);
+				setTimeout('$("#pohai").html("迫害")',1500);
+			})
+		})
     </script>
     {% for i in benbens %}
 		<p style="text-align: center;">
