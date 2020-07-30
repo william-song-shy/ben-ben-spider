@@ -249,7 +249,7 @@ class CheckPaste ():
 		if (cur.cjsj).days>=1:
 			raise ValidationError('这个剪贴板的创建时间过早')
 			return
-		if a['currentData']['paste']['user']['uid']!=form.luoguid.data:
+		if t['currentData']['paste']['user']['uid']!=form.luoguid.data:
 			raise ValidationError('创建者不是您')
 			return
 		text=t['currentData']['paste']['data']
