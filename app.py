@@ -188,7 +188,7 @@ def ranklist():
     end = request.args.get('end', 0, type=int)
     _contentOnly=request.args.get('_contentOnly',0,type=int)
     if persecute:
-        p = LuoguUser.query.with_entities(LuoguUser.username,LuoguUser.uid,LuoguUser.beipohai).filter(LuoguUser.beipohai != 0).order_by(
+        p = LuoguUser.query.with_entities(LuoguUser.username,LuoguUser.uid,LuoguUser.beipohai).filter(LuoguUser.beipohai != 0,LuoguUser.allow_paiming == True).order_by(
             desc(LuoguUser.beipohai)).paginate(page, per_page=20, error_out=False)
         if _contentOnly==1:
             return jsonify(p.items)
