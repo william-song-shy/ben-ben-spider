@@ -1,7 +1,7 @@
 {% macro render_nav_item(endpoint, text, badge='') %}
     <a class="item {% if request.endpoint and request.endpoint == endpoint %}active{% endif %}"
        href="{{ url_for(endpoint, **kwargs) }}">
-       {{text}}
+       {{text|safe}}
     </a>
 {% endmacro %}
 
