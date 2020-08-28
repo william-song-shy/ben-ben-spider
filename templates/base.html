@@ -12,14 +12,18 @@
 		<script src="{{url_for('static',filename='semantic/semantic.min.js')}}"></script>
 	</head>
 	<body>
-		<div class="ui fixed large menu">
+		<div class="ui borderless menu" style="height: 47px;">
 			<div class="ui container">
+				<a class="header item" href="{{url_for("main")}}">
+					<i class="bug icon"></i>
+					犇犇爬虫
+				</a>
 				{{ render_nav_item('main', '<i class="home icon"> </i> 主页') }}
 				{{ render_nav_item('ranklist', '<i class="signal icon"> </i> 排行榜') }}
 				{{ render_nav_item('help', '<i class="help circle icon"> </i> Q&A') }}
 			</div>
 		</div>
-		<div class="ui container" style="margin-top: 50px; ">
+		<div class="ui container" >
 	        {{ render_messages(container=False, dismissible=True) }}
 	        {% block body %}{% endblock %}
     	</div>
