@@ -12,7 +12,7 @@
 		<script src="{{url_for('static',filename='semantic/semantic.min.js')}}"></script>
 	</head>
 	<body>
-		<div class="ui borderless menu" style="height: 47px;">
+		<div class="ui fixed borderless menu" style="height: 50px;">
 			<div class="ui container">
 				<a class="header item" href="{{url_for("main")}}">
 					<i class="bug icon"></i>
@@ -23,7 +23,7 @@
 				{{ render_nav_item('help', '<i class="help circle icon"> </i> Q&A') }}
 			</div>
 		</div>
-		<div class="ui container" >
+		<div class="ui container" style="margin-top: 55px; " >
 	        {{ render_messages(container=False, dismissible=True) }}
 	        {% block body %}{% endblock %}
     	</div>
