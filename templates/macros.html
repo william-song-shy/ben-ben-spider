@@ -21,12 +21,15 @@
 	    {% if messages -%} 
 	    	{# don't output anything if there are no messages #}
 		    {% for cat, msg in messages %}
-		        <div class="ui {{ transform.get(cat.lower(), cat or default_category) }} message">
+		        {# <div class="ui {{ transform.get(cat.lower(), cat or default_category) }} message">
 		  			<i class="close icon"></i>
 		  				<div class="header">
 		           			{{ msg }}
 		         		</div>
-		        </div>
+		        </div> #}
+				<script>
+					swal("错误","{{msg}}","error");
+				</script>
 		    {%- endfor -%}
 	    {% endif -%}
     {% endwith -%}
