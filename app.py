@@ -226,6 +226,9 @@ def timequery():
         return redirect("/ranklist?begin={}&end={}".format(int (time.mktime(form.begin.data.timetuple())),int (time.mktime(form.end.data.timetuple()))))
     return render_template("timequery.html", form=form)
 
+class ValidationError (ValueError):
+    pass
+
 class CheckPaste ():
 	def __init__ (self):
 		pass
@@ -246,16 +249,31 @@ class CheckPaste ():
 		cur = datetime.datetime.now()
 		cjsj=t['currentData']['paste']['time']
 		cjsj=datetime.datetime.fromtimestamp(cjsj)
-		if (cur.cjsj).days>=1:
+		if (cur-cjsj).days>=1:
 			raise ValidationError('这个剪贴板的创建时间过早')
 			return
-		if t['currentData']['paste']['user']['uid']!=form.luoguid.data:
+		if t['currentData']['paste']['user']['uid']!=int (form.luoguid.data):
 			raise ValidationError('创建者不是您')
 			return
 		text=t['currentData']['paste']['data']
 		if text!=form.username.data:
 			raise ValidationError('内容错误')
 			return
+
+@app.route("/testpaste", methods=['GET', 'POST'])
+def test_paste ():
+    class queryform (FlaskForm):
+        username = StringField(
+            '用户名', validators=[DataRequired(), Length(1, 20)])
+        luoguid = StringField(
+            '洛谷ID', validators=[DataRequired(), Length(1, 20)])
+        paste = StringField(
+            '剪贴板ID', validators=[DataRequired(), Length(1, 20),CheckPaste()])
+        submit = SubmitField('查询')
+    form=queryform()
+    if form.validate_on_submit():
+        return redirect('help')
+    return render_template("test_paste.html",form=form)
 
 @app.route("/api/checkbenben")
 def api_checkbenben():
