@@ -10,3 +10,4 @@ pymysql
 python-dotenv
 flask-migrate
 Markdown
+flask_wtf
