@@ -11,3 +11,4 @@ python-dotenv
 flask-migrate
 Markdown
 flask_wtf
+Flask-Limiter

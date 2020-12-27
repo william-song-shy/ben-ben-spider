@@ -11,6 +11,8 @@ import time
 import requests
 from os import environ, path
 from dotenv import load_dotenv
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 app = Flask(__name__)
@@ -38,6 +40,7 @@ bootstrap = Bootstrap(app)
 thread = threading.Thread(target=doing)
 thread.setDaemon(True)
 thread.start()
+limiter = Limiter(app, key_func=get_remote_address)
 @app.route("/", methods=['GET', 'POST'])
 def main():
     cur = datetime.datetime.now()
@@ -107,6 +110,7 @@ def help():
 
 
 @app.route("/persecute", methods=["POST"])
+@limiter.limit("2 per second")
 def persecute():
     uid = request.args['uid']
     u = LuoguUser.query.filter_by(uid=uid).first_or_404()
