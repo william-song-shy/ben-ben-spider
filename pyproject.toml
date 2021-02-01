@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "ben-ben-spider"
+version = "0.1.0"
+description = ""
+authors = ["repl.it user <replituser@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+sqlalchemy = "^1.3.22"
+flask-wtf = "^0.14.3"
+flask = "^1.1.2"
+python-dotenv = "^0.15.0"
+flask-migrate = "^2.6.0"
+flask-limiter = "^1.4"
+flask-sqlalchemy = "^2.4.4"
+gevent = "^21.1.2"
+click = "^7.1.2"
+gunicorn = "^20.0.4"
+wtforms = "^2.3.3"
+alembic = "^1.5.3"
+flask-bootstrap = "^3.3.7"
+bs4 = "^0.0.1"
+markdown = "^3.3.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

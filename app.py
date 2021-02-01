@@ -9,6 +9,9 @@ import markdown
 import re
 import time
 import requests
+import flask_bootstrap 
+import gunicorn
+import gevent
 from os import environ, path
 from dotenv import load_dotenv
 from flask_limiter import Limiter
@@ -110,7 +113,7 @@ def help():
 
 
 @app.route("/persecute", methods=["POST"])
-@limiter.limit("2 per second")
+@limiter.limit("8 per second")
 def persecute():
     uid = request.args['uid']
     u = LuoguUser.query.filter_by(uid=uid).first_or_404()

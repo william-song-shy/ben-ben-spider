@@ -8,7 +8,11 @@
 		更新
 	</button>
 	<button class="ui primary button" id="pohai">
-		迫害Ta
+        {% if uid == 122461 %}
+            迫害她
+        {% else %}
+		    迫害Ta
+        {% endif %}
 	</button>
 	<a href="https://www.luogu.com.cn/user/{{uid}}" class="ui primary button">
 		前往洛谷个人主页
