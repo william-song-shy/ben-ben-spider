@@ -1,1 +1,1 @@
-('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+HTTPSConnectionPool(host='www.luogu.com.cn', port=443): Max retries exceeded with url: /feed/all (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fea2ca05d30>: Failed to establish a new connection: [Errno 110] Connection timed out'))

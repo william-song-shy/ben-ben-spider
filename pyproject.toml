@@ -18,9 +18,10 @@ click = "^7.1.2"
 gunicorn = "^20.0.4"
 wtforms = "^2.3.3"
 alembic = "^1.5.3"
-flask-bootstrap = "^3.3.7"
 bs4 = "^0.0.1"
 markdown = "^3.3.3"
+Bootstrap-Flask = "^1.5.1"
+flask-bootstrap = "^3.3.7"
 
 [tool.poetry.dev-dependencies]
 

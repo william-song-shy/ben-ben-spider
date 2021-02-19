@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask,render_template
 from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,abort
 import threading
 from sqlalchemy import extract,func,desc
@@ -9,7 +8,7 @@ import markdown
 import re
 import time
 import requests
-import flask_bootstrap 
+import flask_bootstrap
 import gunicorn
 import gevent
 from os import environ, path
@@ -46,126 +45,127 @@ thread.start()
 limiter = Limiter(app, key_func=get_remote_address)
 @app.route("/", methods=['GET', 'POST'])
 def main():
-    cur = datetime.datetime.now()
-    v = BenBen.query.join(BenBen.user).filter(
-        extract('year', BenBen.time) == cur.year,
-        extract('month', BenBen.time) == cur.month,
-        extract('day', BenBen.time) == cur.day,
-        LuoguUser.allow_paiming == True
-    ).count()
-    b = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
-        extract('year', BenBen.time) == cur.year,
-        extract('month', BenBen.time) == cur.month,
-        extract('day', BenBen.time) == cur.day,
-        LuoguUser.allow_paiming == True
-    ).group_by(BenBen.uid).order_by(desc(func.count())).limit(20)
-    # print(b)
+	cur = datetime.datetime.utcnow()
+	v = BenBen.query.join(BenBen.user).filter(
+		extract('year', BenBen.time) == cur.year,
+		extract('month', BenBen.time) == cur.month,
+		extract('day', BenBen.time) == cur.day,
+		LuoguUser.allow_paiming == True
+	).count()
+	b = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
+		extract('year', BenBen.time) == cur.year,
+		extract('month', BenBen.time) == cur.month,
+		extract('day', BenBen.time) == cur.day,
+		LuoguUser.allow_paiming == True
+	).group_by(BenBen.uid).order_by(desc(func.count())).limit(20)
+	# print(b)
 
-    class queryform (FlaskForm):
-        username = StringField(
-            '用户名', validators=[DataRequired(), Length(1, 20)])
-        submit = SubmitField('查询')
-    form = queryform()
-    if form.validate_on_submit():
-        user = LuoguUser.query.filter_by(username=form.username.data).first()
-        if user:
-            return redirect(url_for('user', uid=user.uid))
-            if not user.allow_paiming:
-                flash("该用户过分刷水被禁止排名和查询", 'danger')
-                return redirect(url_for('main'))
-        else:
-            flash("用户不存在或在服务器运行的时间内没有发过犇犇", 'danger')
-            return redirect(url_for('main'))
-    return render_template('zhuye.html', v=v, b=b.all(), form=form)
+	class queryform (FlaskForm):
+		username = StringField(
+			'用户名', validators=[DataRequired(), Length(1, 20)])
+		submit = SubmitField('查询')
+	form = queryform()
+	if form.validate_on_submit():
+		user = LuoguUser.query.filter_by(username=form.username.data).first()
+		if user:
+			return redirect(url_for('user', uid=user.uid))
+			if not user.allow_paiming:
+				flash("该用户过分刷水被禁止排名和查询", 'danger')
+				return redirect(url_for('main'))
+		else:
+			flash("用户不存在或在服务器运行的时间内没有发过犇犇", 'danger')
+			return redirect(url_for('main'))
+	return render_template('zhuye.html', v=v, b=b.all(), form=form)
 
 
 @app.route("/user/<int:uid>")
 def user(uid):
-    cur = datetime.datetime.now()
-    u = LuoguUser.query.filter_by(uid=uid).first()
-    if not u:
-        flash("用户不存在或在服务器运行的时间内没有发过犇犇", 'danger')
-        return redirect(url_for('main'))
-    if not u.allow_paiming:
-        flash("该用户过分刷水被禁止排名和查询", 'danger')
-        return redirect(url_for('main'))
-    ph = u.beipohai
-    #print (u.allow_paiming)
-    u = u.benbens
-    v = BenBen.query.filter(
-        extract('year', BenBen.time) == cur.year,
-        extract('month', BenBen.time) == cur.month,
-        extract('day', BenBen.time) == cur.day,
-        BenBen.uid == uid
-    ).count()
-    pm= BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
-        extract('year', BenBen.time) == cur.year,
-        extract('month', BenBen.time) == cur.month,
-        extract('day', BenBen.time) == cur.day,
-        LuoguUser.allow_paiming == True
-    ).group_by(BenBen.uid).order_by(desc(func.count())).having(func.count()>v).count()
-    return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid)
+	cur = datetime.datetime.utcnow()
+	u = LuoguUser.query.filter_by(uid=uid).first()
+	if not u:
+		flash("用户不存在或在服务器运行的时间内没有发过犇犇", 'danger')
+		return redirect(url_for('main'))
+	if not u.allow_paiming:
+		flash("该用户过分刷水被禁止排名和查询", 'danger')
+		return redirect(url_for('main'))
+	ph = u.beipohai
+	#print (u.allow_paiming)
+	u = u.benbens
+	v = BenBen.query.filter(
+		extract('year', BenBen.time) == cur.year,
+		extract('month', BenBen.time) == cur.month,
+		extract('day', BenBen.time) == cur.day,
+		BenBen.uid == uid
+	).count()
+	pm= BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
+		extract('year', BenBen.time) == cur.year,
+		extract('month', BenBen.time) == cur.month,
+		extract('day', BenBen.time) == cur.day,
+		LuoguUser.allow_paiming == True
+	).group_by(BenBen.uid).order_by(desc(func.count())).having(func.count()>v).count()
+	return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid)
 
 
 @app.route("/help")
 def help():
-    return render_template('help.html')
+	return render_template('help.html')
 
 
 @app.route("/persecute", methods=["POST"])
 @limiter.limit("8 per second")
+@limiter.limit("320 per minute")
 def persecute():
-    uid = request.args['uid']
-    u = LuoguUser.query.filter_by(uid=uid).first_or_404()
-    u.beipohai += 1
-    phcs = u.beipohai
-    db.session.commit()
-    return str(phcs)
+	uid = request.args['uid']
+	u = LuoguUser.query.filter_by(uid=uid).first_or_404()
+	u.beipohai += 1
+	phcs = u.beipohai
+	db.session.commit()
+	return str(phcs)
 
 
 @app.route("/banned")
 def banned():
-    users = LuoguUser.query.with_entities(
-        LuoguUser.uid, LuoguUser.username).filter_by(allow_paiming=False).all()
-    return jsonify(users)
+	users = LuoguUser.query.with_entities(
+		LuoguUser.uid, LuoguUser.username).filter_by(allow_paiming=False).all()
+	return jsonify(users)
 
 
 @app.cli.command()
 @click.option('--username', prompt=True, help='Username')
 def fengjinyonghu(username):
-    click.echo('开始查询...')
-    u = LuoguUser.query.filter_by(username=username).first()
-    if not u:
-        click.echo('该用户不存在.')
-        return
-    click.echo('查询成功.')
-    if not u.allow_paiming:
-        click.echo('该用户已被限制')
-        return
-    click.echo('更改中...')
-    u.allow_paiming = False
-    db.session.add(u)
-    db.session.commit()
-    click.echo('成功.')
+	click.echo('开始查询...')
+	u = LuoguUser.query.filter_by(username=username).first()
+	if not u:
+		click.echo('该用户不存在.')
+		return
+	click.echo('查询成功.')
+	if not u.allow_paiming:
+		click.echo('该用户已被限制')
+		return
+	click.echo('更改中...')
+	u.allow_paiming = False
+	db.session.add(u)
+	db.session.commit()
+	click.echo('成功.')
 
 
 @app.cli.command()
 @click.option('--username', prompt=True, help='Username')
 def jiefengyonghu(username):
-    click.echo('开始查询...')
-    u = LuoguUser.query.filter_by(username=username).first()
-    if not u:
-        click.echo('该用户不存在.')
-        return
-    click.echo('查询成功.')
-    if u.allow_paiming:
-        click.echo('该用户没有被限制')
-        return
-    click.echo('更改中...')
-    u.allow_paiming = True
-    db.session.add(u)
-    db.session.commit()
-    click.echo('成功.')
+	click.echo('开始查询...')
+	u = LuoguUser.query.filter_by(username=username).first()
+	if not u:
+		click.echo('该用户不存在.')
+		return
+	click.echo('查询成功.')
+	if u.allow_paiming:
+		click.echo('该用户没有被限制')
+		return
+	click.echo('更改中...')
+	u.allow_paiming = True
+	db.session.add(u)
+	db.session.commit()
+	click.echo('成功.')
 
 @app.cli.command()
 @click.option('--count', prompt=True)
@@ -189,52 +189,52 @@ def fakebenbens(count):
 
 @app.route("/ranklist")
 def ranklist():
-    page = request.args.get('page', 1, type=int)
-    persecute = request.args.get('persecute', 0, type=int)
-    begin = request.args.get('begin', 0, type=int)
-    end = request.args.get('end', 0, type=int)
-    _contentOnly=request.args.get('_contentOnly',0,type=int)
-    if persecute:
-        p = LuoguUser.query.with_entities(LuoguUser.username,LuoguUser.uid,LuoguUser.beipohai).filter(LuoguUser.beipohai != 0,LuoguUser.allow_paiming == True).order_by(
-            desc(LuoguUser.beipohai)).paginate(page, per_page=20, error_out=False)
-        if _contentOnly==1:
-            return jsonify(p.items)
-        return render_template('persecute.html', pagination=p, messages=p.items)
-    if begin != 0 and end != 0:
-        begin=datetime.datetime.fromtimestamp (begin)
-        end=datetime.datetime.fromtimestamp (end)
-        p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'),
-                                                         BenBen.username, BenBen.uid).filter(BenBen.time.between(begin, end),
-                                                                                             LuoguUser.allow_paiming == True).group_by(BenBen.uid).order_by(desc(func.count())).paginate(page,
-                                                                                                                                                                                         per_page=20,
-                                                                                                                                                                                         error_out=False)
-        if _contentOnly==1:
-            return jsonify(p.items)
-        return render_template('ranklisttime.html', pagination=p, messages=p.items,begin=begin,end=end)
-    cur = datetime.datetime.now()
-    p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
-        extract('year', BenBen.time) == cur.year,
-        extract('month', BenBen.time) == cur.month,
-        extract('day', BenBen.time) == cur.day,
-        LuoguUser.allow_paiming == True).group_by(BenBen.uid).order_by(desc(func.count())).paginate(page, per_page=20, error_out=False)
-    if _contentOnly==1:
-            return jsonify(p.items)
-    return render_template('ranklist.html', pagination=p, messages=p.items)
+	page = request.args.get('page', 1, type=int)
+	persecute = request.args.get('persecute', 0, type=int)
+	begin = request.args.get('begin', 0, type=int)
+	end = request.args.get('end', 0, type=int)
+	_contentOnly=request.args.get('_contentOnly',0,type=int)
+	if persecute:
+		p = LuoguUser.query.with_entities(LuoguUser.username,LuoguUser.uid,LuoguUser.beipohai).filter(LuoguUser.beipohai != 0,LuoguUser.allow_paiming == True).order_by(
+			desc(LuoguUser.beipohai)).paginate(page, per_page=20, error_out=False)
+		if _contentOnly==1:
+			return jsonify(p.items)
+		return render_template('persecute.html', pagination=p, messages=p.items)
+	if begin != 0 and end != 0:
+		begin=datetime.datetime.fromtimestamp (begin)
+		end=datetime.datetime.fromtimestamp (end)
+		p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'),
+														 BenBen.username, BenBen.uid).filter(BenBen.time.between(begin, end),
+																							 LuoguUser.allow_paiming == True).group_by(BenBen.uid).order_by(desc(func.count())).paginate(page,
+																																														 per_page=20,
+																																														 error_out=False)
+		if _contentOnly==1:
+			return jsonify(p.items)
+		return render_template('ranklisttime.html', pagination=p, messages=p.items,begin=begin,end=end)
+	cur = datetime.datetime.utcnow()
+	p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
+		extract('year', BenBen.time) == cur.year,
+		extract('month', BenBen.time) == cur.month,
+		extract('day', BenBen.time) == cur.day,
+		LuoguUser.allow_paiming == True).group_by(BenBen.uid).order_by(desc(func.count())).paginate(page, per_page=20, error_out=False)
+	if _contentOnly==1:
+			return jsonify(p.items)
+	return render_template('ranklist.html', pagination=p, messages=p.items)
 
 
 @app.route("/timequery", methods=["GET", "POST"])
 def timequery():
-    class timequeryform (FlaskForm):
-        begin = DateTimeField('开始时间点', validators=[DataRequired()])
-        end = DateTimeField('结束时间点', validators=[DataRequired()])
-        submit = SubmitField('查询')
-    form = timequeryform()
-    if form.validate_on_submit():
-        return redirect("/ranklist?begin={}&end={}".format(int (time.mktime(form.begin.data.timetuple())),int (time.mktime(form.end.data.timetuple()))))
-    return render_template("timequery.html", form=form)
+	class timequeryform (FlaskForm):
+		begin = DateTimeField('开始时间点', validators=[DataRequired()])
+		end = DateTimeField('结束时间点', validators=[DataRequired()])
+		submit = SubmitField('查询')
+	form = timequeryform()
+	if form.validate_on_submit():
+		return redirect("/ranklist?begin={}&end={}".format(int (time.mktime(form.begin.data.timetuple())),int (time.mktime(form.end.data.timetuple()))))
+	return render_template("timequery.html", form=form)
 
 class ValidationError (ValueError):
-    pass
+	pass
 
 class CheckPaste ():
 	def __init__ (self):
@@ -269,24 +269,29 @@ class CheckPaste ():
 
 @app.route("/testpaste", methods=['GET', 'POST'])
 def test_paste ():
-    class queryform (FlaskForm):
-        username = StringField(
-            '用户名', validators=[DataRequired(), Length(1, 20)])
-        luoguid = StringField(
-            '洛谷ID', validators=[DataRequired(), Length(1, 20)])
-        paste = StringField(
-            '剪贴板ID', validators=[DataRequired(), Length(1, 20),CheckPaste()])
-        submit = SubmitField('查询')
-    form=queryform()
-    if form.validate_on_submit():
-        return redirect('help')
-    return render_template("test_paste.html",form=form)
+	class queryform (FlaskForm):
+		username = StringField(
+			'用户名', validators=[DataRequired(), Length(1, 20)])
+		luoguid = StringField(
+			'洛谷ID', validators=[DataRequired(), Length(1, 20)])
+		paste = StringField(
+			'剪贴板ID', validators=[DataRequired(), Length(1, 20),CheckPaste()])
+		submit = SubmitField('查询')
+	form=queryform()
+	if form.validate_on_submit():
+		return redirect('help')
+	return render_template("test_paste.html",form=form)
 
 @app.route("/api/checkbenben")
 def api_checkbenben():
 	uid=request.args.get('uid',-1,type=int)
+	page=request.args.get('page',1,type=int)
 	headers = {'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"}
-	benbens = requests.get('https://www.luogu.com.cn/api/feed/list?user={}'.format(uid),headers=headers).json()
+	try :
+		benbens = requests.get('https://www.luogu.com.cn/api/feed/list?user={}&page={}'.format(uid,page),headers=headers).json()
+	except :
+		time.sleep(5)
+		benbens = requests.get('https://www.luogu.com.cn/api/feed/list?user={}&page={}'.format(uid,page),headers=headers).json()
 	benbens=benbens['feeds']['result']
 	cur = datetime.datetime.now()
 	cnt=0
@@ -315,3 +320,11 @@ def api_checkbenben():
 		if stime.date() == cur.date():
 			cnt+=1
 	return str(cnt)
+
+@app.route ("/admin")
+def admin ():
+	page = request.args.get('page', 1, type=int)
+	#l=LuoguUser.query.order_by(LuoguUser.username).paginate(page, per_page=20,error_out=False)
+	l=LuoguUser.query.order_by(LuoguUser.username).all()
+	#return render_template("admin.html",l=l.items,len=len);
+	return render_template("admin.html",l=l,len=len)
