@@ -32,6 +32,7 @@ class LuoguUser(db.Model):
 class DeleteWant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     benben = db.relationship('BenBen')
+    reason = db.Column(db.Text)
     approved = db.Column(db.Boolean, default=False)
 
 class User (db.Model,UserMixin):

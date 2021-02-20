@@ -4,3 +4,4 @@ static/data/
 *.db
 .env
 *.log
+*.db-journal

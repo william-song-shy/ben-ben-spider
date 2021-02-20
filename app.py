@@ -93,7 +93,7 @@ def user(uid):
 		return redirect(url_for('main'))
 	ph = u.beipohai
 	#print (u.allow_paiming)
-	u = u.benbens
+	u = BenBen.query.filter(BenBen.uid==uid,BenBen.deleted==False)
 	v = BenBen.query.filter(
 		extract('year', BenBen.time) == cur.year,
 		extract('month', BenBen.time) == cur.month,
