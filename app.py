@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,abort
+from flask_login import LoginManager, UserMixin,current_user,login_user,logout_user,login_required
 import threading
 from sqlalchemy import extract,func,desc
 import datetime
@@ -42,6 +43,8 @@ bootstrap = Bootstrap(app)
 thread = threading.Thread(target=doing)
 thread.setDaemon(True)
 thread.start()
+#login_manager = LoginManager()
+#login_manager.init_app(app)
 limiter = Limiter(app, key_func=get_remote_address)
 @app.route("/", methods=['GET', 'POST'])
 def main():
@@ -328,3 +331,7 @@ def admin ():
 	l=LuoguUser.query.order_by(LuoguUser.username).all()
 	#return render_template("admin.html",l=l.items,len=len);
 	return render_template("admin.html",l=l,len=len)
+
+@app.route("/login")
+def login ():
+    return "咕咕咕"

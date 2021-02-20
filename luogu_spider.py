@@ -4,7 +4,8 @@ import datetime
 import time
 from sqlalchemy import extract
 from app import db
-
+from flask_login import LoginManager, UserMixin,current_user,login_user,logout_user,login_required
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class BenBen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,6 +15,9 @@ class BenBen(db.Model):
     time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('luogu_user.id'))
     user = db.relationship('LuoguUser', uselist=False, backref='BenBen')
+    deleted = db.Column(db.Boolean, default=False)
+    deletewant_id = db.Column(db.Integer, db.ForeignKey('delete_want.id'))
+    deletewant = db.relationship('DeleteWant', uselist=False, backref='BenBen')
 
 
 class LuoguUser(db.Model):
@@ -23,7 +27,25 @@ class LuoguUser(db.Model):
     benbens = db.relationship('BenBen')
     beipohai = db.Column(db.Integer, default=0)
     allow_paiming = db.Column(db.Boolean, default=True)
+    user=db.relationship('User')
 
+class DeleteWant(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    benben = db.relationship('BenBen')
+    approved = db.Column(db.Boolean, default=False)
+
+class User (db.Model,UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    luogu_id = db.Column(db.Integer, db.ForeignKey('luogu_user.id'))
+    luogu_user = db.relationship('LuoguUser', uselist=False, backref='User')
+    username = db.Column(db.String(120), unique=True)
+    password_hash = db.Column(db.String(128))
+    is_admin = db.Column(db.Boolean)
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def validate_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 def jiexi(r):
     html = r.text
