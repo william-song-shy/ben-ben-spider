@@ -32,7 +32,7 @@ class LuoguUser(db.Model):
 
 class DeleteWant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    benben = db.relationship('BenBen')
+    benben = db.relationship('BenBen',uselist=False)
     reason = db.Column(db.Text)
     approved = db.Column(db.Integer, default=0)
     # approved为0表示未审核，-1为未通过，1为通过

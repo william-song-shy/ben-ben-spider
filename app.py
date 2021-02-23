@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,abort
+from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,abort,session
 from flask_login import LoginManager, UserMixin,current_user,login_user,logout_user,login_required
 import threading
 from sqlalchemy import extract,func,desc
@@ -19,7 +19,7 @@ from flask_limiter.util import get_remote_address
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 app = Flask(__name__)
-app.secret_key = '11451419260817avdgsjrhsjaj4'
+app.secret_key = environ.get('sk')
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
 USERNAME = 'root'
@@ -31,7 +31,7 @@ DATABASE = 'benben'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-from luogu_spider import doing,BenBen,LuoguUser
+from luogu_spider import doing,BenBen,LuoguUser,User,DeleteWant
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField,DateTimeField, TextAreaField
@@ -346,9 +346,50 @@ def deletewantnew():
 	if not benben:
 		flash("这条犇犇不存在！")
 		return redirect(url_for('main'))
+	if benben.deletewant_id:
+		return redirect(url_for('deletewant',id=benben.deletewant_id))
 	class queryform (FlaskForm):
 		reason = TextAreaField(
 			'原因', validators=[DataRequired(), Length(1, 75)])
 		submit = SubmitField('查询')
 	form=queryform()
+	if form.validate_on_submit():
+		dwt=DeleteWant()
+		dwt.reason=form.reason.data
+		benben.deletewant=dwt
+		db.session.add(dwt)
+		db.session.commit()
+		flash ("成功")
+		return redirect(url_for('deletewant',id=dwt.id))
+
 	return render_template('deletewantnew.html',benben=benben,form=form)
+
+@app.route("/deletewant/<int:id>")
+def deletewant(id):
+	dwt=DeleteWant.query.filter(DeleteWant.id==id).first()
+	if not dwt:
+		flash("未找到该请求")
+		return (redirect('/'))
+	if dwt.approved==1 and dwt.benben.deleted==False:
+		dwt.benben.deleted=True
+		db.session.commit()
+	return render_template("deletewant.html",dwt=dwt)
+
+@app.cli.command()
+@click.option('--id', prompt=True, help='Id')
+@click.option('--appr', prompt=True, help='appr')
+@click.option('--message', prompt=True, help='message')
+def approved_dwt(id,appr,message):
+	click.echo('开始查询...')
+	dwt = DeleteWant.query.filter(DeleteWant.id == id).first()
+	if not dwt:
+		click.echo("没找到qwq")
+		return
+	dwt.approved=appr
+	dwt.approved_message=message
+	dwt.approved_time=datetime.datetime.now()
+	if appr==1:
+		click.echo("已通过")
+	else:
+		click.echo("已拒绝")
+	db.session.commit()

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}删除请求{% endblock %}
+{% block body %}
+<p>
+    该请求要求删除由{{dwt.benben.username}}发布的犇犇：{{dwt.benben.text|safe}}
+</p>
+<p>
+    请求发布于{{dwt.submit_time.strftime("%Y-%m-%d %H:%M:%S")}}，原因为：{{dwt.reason}}
+</p>
+<p>
+    目前状态为：
+    {% if dwt.approved == 0 %}
+    尚未审核
+    {% elif dwt.approved == -1 %}
+    已拒绝，原因：{{dwt.approved_message}}
+    {% else  %}
+    已通过，留言：{{dwt.approved_message}}
+    {% endif %}
+</p>
+{% endblock body %}
