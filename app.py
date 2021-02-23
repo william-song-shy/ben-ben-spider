@@ -34,7 +34,7 @@ db = SQLAlchemy(app)
 from luogu_spider import doing,BenBen,LuoguUser
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField,DateTimeField
+from wtforms import SubmitField, StringField,DateTimeField, TextAreaField
 from wtforms.validators import DataRequired,Length
 import click
 from flask_migrate import Migrate
@@ -335,3 +335,20 @@ def admin ():
 @app.route("/login")
 def login ():
     return "咕咕咕"
+
+@app.route("/deletewant/new",methods=['GET','POST'])
+def deletewantnew():
+	benbenid=request.args.get('bid',-1,type=int)
+	if (benbenid==-1):
+		flash("未提供要删除的犇犇编号！")
+		return redirect(url_for('main'))
+	benben=BenBen.query.filter(BenBen.id==benbenid).first()
+	if not benben:
+		flash("这条犇犇不存在！")
+		return redirect(url_for('main'))
+	class queryform (FlaskForm):
+		reason = TextAreaField(
+			'原因', validators=[DataRequired(), Length(1, 75)])
+		submit = SubmitField('查询')
+	form=queryform()
+	return render_template('deletewantnew.html',benben=benben,form=form)

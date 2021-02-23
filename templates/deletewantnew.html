@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}发布删除请求{% endblock %}
+{% block body %}
+<p style="text-align: center;">
+    将删除由@<a href="/user/{{benben.uid}}">{{benben.username}}</a>发布的犇犇： {{benben.text|safe}}
+</p>
+<form class="ui form" method="POST">
+	            {{ form.csrf_token }}
+				{%- for fieldname, errors in form.errors.items() %}
+					{%- for error in errors %}
+						<script>
+							swal("验证失败","{{error}}","error");
+						</script>
+					{%- endfor %}
+				{%- endfor %}
+    <div class="ui labeled input" style="text-align: center;">
+        <div class="ui label">
+            删除的原因:
+        </div>
+        <textarea id="reason" name="reason" required="" >
+            这里输入删除原因，不超过75个字符
+        </textarea>
+    </div>
+    <input class = "ui primary button" id="submit" name="submit" type="submit" value="查询">
+</form>
+{% endblock body %}

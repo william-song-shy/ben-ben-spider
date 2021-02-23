@@ -6,6 +6,7 @@ from sqlalchemy import extract
 from app import db
 from flask_login import LoginManager, UserMixin,current_user,login_user,logout_user,login_required
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 class BenBen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,7 +34,11 @@ class DeleteWant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     benben = db.relationship('BenBen')
     reason = db.Column(db.Text)
-    approved = db.Column(db.Boolean, default=False)
+    approved = db.Column(db.Integer, default=0)
+    # approved为0表示未审核，-1为未通过，1为通过
+    approved_message=db.Column(db.Text)
+    submit_time=db.Column(db.DateTime,default=datetime.datetime.now)
+    approved_time=db.Column(db.DateTime)
 
 class User (db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
