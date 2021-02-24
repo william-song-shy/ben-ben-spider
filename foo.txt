@@ -1,1 +1,1 @@
-HTTPSConnectionPool(host='www.luogu.com.cn', port=443): Max retries exceeded with url: /feed/all (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f943653c2b0>: Failed to establish a new connection: [Errno 110] Connection timed out'))
+HTTPSConnectionPool(host='www.luogu.com.cn', port=443): Max retries exceeded with url: /feed/all (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f395877ca00>: Failed to establish a new connection: [Errno 110] Connection timed out'))

@@ -53,7 +53,7 @@
 			@<a href="/user/{{i.uid}}">{{ i.username }}<a></a>:{{ i.text|safe }}
 		</p>
         <p style="text-align: center;">
-			 发送时间:{{i.time}}
+			 发送时间:{{moment(i.time).format	("YYYY-MM-DD HH:mm:ss")}}
             <a href="/deletewant/new?bid={{i.id}}" >点此申请删除</a>
         </p>
     {% endfor %}

@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,abort,session
 from flask_login import LoginManager, UserMixin,current_user,login_user,logout_user,login_required
+from flask_moment import Moment
 import threading
 from sqlalchemy import extract,func,desc
 import datetime
@@ -34,8 +35,8 @@ db = SQLAlchemy(app)
 from luogu_spider import doing,BenBen,LuoguUser,User,DeleteWant
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField,DateTimeField, TextAreaField
-from wtforms.validators import DataRequired,Length
+from wtforms import SubmitField, StringField,DateTimeField, TextAreaField,PasswordField,BooleanField
+from wtforms.validators import DataRequired,Length,AnyOf,EqualTo
 import click
 from flask_migrate import Migrate
 migrate=Migrate(app,db)
@@ -43,9 +44,16 @@ bootstrap = Bootstrap(app)
 thread = threading.Thread(target=doing)
 thread.setDaemon(True)
 thread.start()
-#login_manager = LoginManager()
-#login_manager.init_app(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 limiter = Limiter(app, key_func=get_remote_address)
+moment = Moment()
+moment.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    user=User.query.get(int(user_id))
+    return user
 @app.route("/", methods=['GET', 'POST'])
 def main():
 	cur = datetime.datetime.utcnow()
@@ -322,19 +330,83 @@ def api_checkbenben():
 		db.session.commit()
 		if stime.date() == cur.date():
 			cnt+=1
-	return str(cnt)
+	return str(cnt),200,{"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"Origin, X-Requested-With, Content-Type, Accept",'Access-Control-Allow-Methods': 'PUT,POST,GET,DELETE,OPTIONS'}
 
 @app.route ("/admin")
+@login_required
 def admin ():
-	page = request.args.get('page', 1, type=int)
-	#l=LuoguUser.query.order_by(LuoguUser.username).paginate(page, per_page=20,error_out=False)
-	l=LuoguUser.query.order_by(LuoguUser.username).all()
-	#return render_template("admin.html",l=l.items,len=len);
-	return render_template("admin.html",l=l,len=len)
+    if not current_user.is_admin:
+        flash ("无权限！爬！！！！")
+        return redirect('/')
+    page = request.args.get('page', 1, type=int)
+    #l=LuoguUser.query.order_by(LuoguUser.username).paginate(page, per_page=20,error_out=False)
+    l=LuoguUser.query.order_by(LuoguUser.username).all()
+    #return render_template("admin.html",l=l.items,len=len);
+    return render_template("admin.html",l=l,len=len)
 
-@app.route("/login")
+@app.route('/login',methods=['GET','POST'])
 def login ():
-    return "咕咕咕"
+    class LoginForm(FlaskForm):
+        username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
+        password = PasswordField('Password', validators=[DataRequired(), Length(1, 128)])
+        remember = BooleanField('Remember')
+        submit = SubmitField('Log in')
+    if current_user.is_authenticated:
+        return redirect('/')
+    form=LoginForm()
+    if form.validate_on_submit():
+        #return str(form.remember.data)
+        username=form.username.data
+        password=form.password.data
+        remember=True
+        user=User.query.filter(User.username==username).first()
+        #print (User.query.all())
+        if user:
+            if user.validate_password(password):
+                login_user(user,remember)
+                return redirect('/')
+            else:
+                flash("密码错误")
+                return redirect('/')
+        else:
+            flash("用户不存在")
+            return redirect('/')
+    return render_template('login.html',form=form)
+
+@app.route('/register',methods=['GET','POST'])
+def register ():
+    class RegisterForm(FlaskForm):
+        username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
+        password = PasswordField('Password', validators=[DataRequired(), Length(1, 128)])
+        password_check = PasswordField('Password_check', validators=[DataRequired(), Length(1, 128),EqualTo("password")])
+        agree = BooleanField('Agree',validators=[])
+        submit = SubmitField('Log in')
+    if current_user.is_authenticated:
+        return redirect('/')
+    form=RegisterForm()
+    if form.validate_on_submit():
+        #return str(form.agree.data)
+        username=form.username.data
+        password=form.password.data
+        user=User.query.filter(User.username==username).first()
+        #print (User.query.all())
+        if user:
+            flash("该用户名已被使用")
+        else:
+            user=User()
+            user.username=username
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            flash("成功")
+            return redirect('/')
+    return render_template('register.html',form=form)
+
+@app.route("/logout")
+@login_required
+def logout ():
+    logout_user()
+    return redirect('/')
 
 @app.route("/deletewant/new",methods=['GET','POST'])
 def deletewantnew():
@@ -393,3 +465,9 @@ def approved_dwt(id,appr,message):
 	else:
 		click.echo("已拒绝")
 	db.session.commit()
+
+@app.route ("/api/list/all")
+def api_list_all():
+    page=request.args.get('page',1,type=int)
+    p = BenBen.query.with_entities(BenBen.id,BenBen.uid,BenBen.username,BenBen.text,BenBen.time).filter(BenBen.deleted == False).order_by(desc(BenBen.time)).paginate(page, per_page=20, error_out=False)
+    return jsonify(p.items)

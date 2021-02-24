@@ -11,6 +11,8 @@
 		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
 		<script src="{{url_for('static',filename='semantic/semantic.min.js')}}"></script>
         <script src="{{url_for('static',filename='md5.js')}}"></script>
+		{{ moment.include_moment() }}
+		{{ moment.locale('zh-cn') }}　
 	</head>
 	<body>
 		<div class="ui fixed borderless menu" style="height: 50px;">
@@ -23,7 +25,22 @@
 				{{ render_nav_item('ranklist', '<i class="signal icon"> </i> 排行榜') }}
 				{{ render_nav_item('help', '<i class="help circle icon"> </i> Q&A') }}
                 <div class="right menu">
+					{% if current_user.is_authenticated %}
+					<div class="ui item simple dropdown" >
+						<i class="user icon"></i>
+						{{current_user.username}}
+						<i class="dropdown icon"></i>
+						<div class="menu">
+							<a class="item" href="/logout"><i class="sign-out icon"></i>登出</a>
+                            {% if current_user.is_admin %}
+                                <a class="item" href="/admin"><i class="cogs icon"></i>管理后台</a>
+                            {% endif %}
+						</div>
+					</div>
+					{% else %}
                     {{ render_nav_item('login', '<i class="sign-in icon"></i>登录') }}
+					{{ render_nav_item('register', '注册') }}
+					{% endif %}
                 </div>
 			</div>
 		</div>

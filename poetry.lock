@@ -154,6 +154,17 @@ alembic = ">=0.7"
 
 [[package]]
 category = "main"
+description = "Formatting of dates and times in Flask templates using moment.js."
+name = "flask-moment"
+optional = false
+python-versions = "*"
+version = "0.11.0"
+
+[package.dependencies]
+Flask = "*"
+
+[[package]]
+category = "main"
 description = "Adds SQLAlchemy support to your Flask application."
 name = "flask-sqlalchemy"
 optional = false
@@ -439,7 +450,7 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "2fe8a5aa204df67d6a32b330a4f83dba5e14e521b2bd71301e5741b6be4b96dd"
+content-hash = "6d9c5cd372d9c6bf900767d60cfd533daf10c9789ba0e9a3f591519492be866f"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -524,6 +535,10 @@ flask-login = [
 flask-migrate = [
     {file = "Flask-Migrate-2.6.0.tar.gz", hash = "sha256:8626af845e6071ef80c70b0dc16d373f761c981f0ad61bb143a529cab649e725"},
     {file = "Flask_Migrate-2.6.0-py2.py3-none-any.whl", hash = "sha256:c1601dfd46b9204233935e5d73473cd7fa959db7a4b0e894c7aa7a9e8aeebf0e"},
+]
+flask-moment = [
+    {file = "Flask-Moment-0.11.0.tar.gz", hash = "sha256:ff4cc0c4f8ec6798e19ba17fac409a8090f21677da6b21e3e1e4450344d8ed71"},
+    {file = "Flask_Moment-0.11.0-py2.py3-none-any.whl", hash = "sha256:75e1ae59b7562731acf9faf295c0bfd8165f51f67a62bd779e0c57e5f1c66dbf"},
 ]
 flask-sqlalchemy = [
     {file = "Flask-SQLAlchemy-2.4.4.tar.gz", hash = "sha256:bfc7150eaf809b1c283879302f04c42791136060c6eeb12c0c6674fb1291fae5"},

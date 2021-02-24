@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}登录{% endblock %}
+{% block body %}
+<form method="POST" class="ui form">
+
+{{ form.csrf_token }}
+				{%- for fieldname, errors in form.errors.items() %}
+					{%- for error in errors %}
+						<script>
+							swal("登录失败","{{error}}","error");
+						</script>
+					{%- endfor %}
+				{%- endfor %}
+<div class="field" >
+					<label>
+						用户名:
+                    </label>
+					<input id="username" name="username" required="" type="text" value="">
+				</div>
+<div class="field" >
+					<label>
+						密码:
+                    </label>
+					<input id="password" name="password" required="" type="password" value="">
+</div>
+    <div class="field">
+    <button class = "ui primary button" id="submit" name="submit" type="submit" >登录</button>
+</form>
+
+{% endblock body%}

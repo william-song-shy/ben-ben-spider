@@ -28,7 +28,11 @@
 		         		</div>
 		        </div> #}
 				<script>
-					swal("错误","{{msg}}","error");
+                    {% if msg == "成功" %}
+                        swal("成功","{{msg}}","success");
+                    {% else %}
+					    swal("信息","{{msg}}","error");
+                    {% endif %}
 				</script>
 		    {%- endfor -%}
 	    {% endif -%}
