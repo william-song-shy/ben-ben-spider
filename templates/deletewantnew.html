@@ -13,14 +13,12 @@
 						</script>
 					{%- endfor %}
 				{%- endfor %}
-    <div class="ui labeled input" style="text-align: center;">
-        <div class="ui label">
+    <div class="field" >
+        <label>
             删除的原因:
-        </div>
-        <textarea id="reason" name="reason" required="" >
-            这里输入删除原因，不超过75个字符
-        </textarea>
+        </label>
+        <textarea id="reason" name="reason" required="" >这里输入删除原因，不超过75个字符</textarea>
     </div>
-    <input class = "ui primary button" id="submit" name="submit" type="submit" value="提交">
+    <button class = "ui primary button" id="submit" name="submit" type="submit" >提交</button>
 </form>
 {% endblock body %}

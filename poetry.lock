@@ -308,6 +308,14 @@ version = "1.1.1"
 
 [[package]]
 category = "main"
+description = "MySQL driver written in Python"
+name = "mysql-connector"
+optional = false
+python-versions = "*"
+version = "2.2.9"
+
+[[package]]
+category = "main"
 description = "C parser in Python"
 marker = "platform_python_implementation == \"CPython\" and sys_platform == \"win32\""
 name = "pycparser"
@@ -450,7 +458,7 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "6d9c5cd372d9c6bf900767d60cfd533daf10c9789ba0e9a3f591519492be866f"
+content-hash = "b7df8a1ecc06082e40d1951c126d13624e6ac5d37c5de16d0761dceadc25ffe4"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -699,6 +707,9 @@ markupsafe = [
     {file = "MarkupSafe-1.1.1-cp39-cp39-win32.whl", hash = "sha256:22c178a091fc6630d0d045bdb5992d2dfe14e3259760e713c490da5323866c39"},
     {file = "MarkupSafe-1.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:b7d644ddb4dbd407d31ffb699f1d140bc35478da613b441c582aeb7c43838dd8"},
     {file = "MarkupSafe-1.1.1.tar.gz", hash = "sha256:29872e92839765e546828bb7754a68c418d927cd064fd4708fab9fe9c8bb116b"},
+]
+mysql-connector = [
+    {file = "mysql-connector-2.2.9.tar.gz", hash = "sha256:1733e6ce52a049243de3264f1fbc22a852cb35458c4ad739ba88189285efdf32"},
 ]
 pycparser = [
     {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},

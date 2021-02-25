@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import render_pagination %}
+{%block title %}删除请求列表{% endblock %}
+{% block body %}
+{% if current_user.is_admin %}
+<p>
+    还有{{pagination.total}}条未审核请求
+</p>
+{% endif %}
+<table class="ui celled table" style="text-align: center;">
+    <thead>
+        <tr>
+            <th>
+                编号
+            </th>
+            <th>
+                状态
+            </th>
+            <th>
+                链接
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in messages %}
+            <tr>
+                <td>
+                    {{i.id}}
+                </td>
+                <td>
+                    {% if i.approved== 0 %}
+                        未审核
+                    {% elif i.approved==1 %}
+                        已通过，信息：{{i.approved_message}}
+                    {% else %}
+                        已拒绝，信息：{{i.approved_message}}
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/deletewant/{{i.id}}">点此进入</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{{ render_pagination(pagination) }}
+{% endblock %}

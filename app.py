@@ -11,8 +11,8 @@ import re
 import time
 import requests
 import flask_bootstrap
-import gunicorn
-import gevent
+#import gunicorn
+#import gevent
 from os import environ, path
 from dotenv import load_dotenv
 from flask_limiter import Limiter
@@ -35,7 +35,7 @@ db = SQLAlchemy(app)
 from luogu_spider import doing,BenBen,LuoguUser,User,DeleteWant
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField,DateTimeField, TextAreaField,PasswordField,BooleanField
+from wtforms import SubmitField, StringField,DateTimeField, TextAreaField,PasswordField,BooleanField,RadioField
 from wtforms.validators import DataRequired,Length,AnyOf,EqualTo
 import click
 from flask_migrate import Migrate
@@ -409,6 +409,7 @@ def logout ():
     return redirect('/')
 
 @app.route("/deletewant/new",methods=['GET','POST'])
+@login_required
 def deletewantnew():
 	benbenid=request.args.get('bid',-1,type=int)
 	if (benbenid==-1):
@@ -428,24 +429,80 @@ def deletewantnew():
 	if form.validate_on_submit():
 		dwt=DeleteWant()
 		dwt.reason=form.reason.data
+		dwt.submit_user_id=current_user.id
 		benben.deletewant=dwt
 		db.session.add(dwt)
+		db.session.commit()
+		if current_user.is_admin:
+			dwt.benben.deleted = True
+			dwt.approved=1
+			dwt.approved_message="管理员请求，自动通过"
 		db.session.commit()
 		flash ("成功")
 		return redirect(url_for('deletewant',id=dwt.id))
 
 	return render_template('deletewantnew.html',benben=benben,form=form)
 
+@app.route('/deletewant/list')
+@login_required
+def deletewantlist():
+	page=request.args.get('page',1,type=int)
+	if not current_user.is_admin:
+		p=DeleteWant.query.filter(DeleteWant.submit_user_id==current_user.id)
+	else:
+		p=DeleteWant.query.filter(DeleteWant.approved==0)
+	p=p.paginate(page, per_page=20, error_out=False)
+	return render_template("deletewantlist.html", pagination=p, messages=p.items)
+
 @app.route("/deletewant/<int:id>")
+@login_required
 def deletewant(id):
 	dwt=DeleteWant.query.filter(DeleteWant.id==id).first()
 	if not dwt:
 		flash("未找到该请求")
 		return (redirect('/'))
+	if not current_user.is_admin and dwt.submit_user_id!=current_user.id:
+		flash("无权限!")
+		return (redirect('/'))
 	if dwt.approved==1 and dwt.benben.deleted==False:
 		dwt.benben.deleted=True
 		db.session.commit()
-	return render_template("deletewant.html",dwt=dwt)
+	return render_template("deletewant.html",dwt=dwt,u=User.query.filter(User.id==dwt.submit_user_id).first())
+
+@app.route('/admin/deletewant/<int:id>',methods=['GET','POST'])
+@login_required
+def admindeletewant(id):
+	if not current_user.is_admin:
+		flash("无权限！爬！！！！")
+		return redirect('/')
+	dwt=DeleteWant.query.filter(DeleteWant.id==id).first()
+	if not dwt:
+		flash("不存在")
+		return redirect('/')
+	if dwt.approved!=0:
+		flash("已处理")
+		return redirect('/')
+	class queryform(FlaskForm):
+		appr=RadioField("是否通过",validators=[DataRequired()])
+		massage=TextAreaField("留言",validators=[DataRequired()],)
+		submit = SubmitField('提交')
+	form=queryform()
+	form.appr.choices=[(0,"通过"),(1,"拒绝")]
+	#if request.method=='POST':
+	#	return form.appr.data
+	if form.validate_on_submit():
+		appr=form.appr.data
+		return appr
+		if appr=="approved":
+			dwt.approved=1
+			dwt.benben.deleted=True
+		else:
+			dwt.approved=-1
+		dwt.approved_message=form.massage.data
+		db.session.commit()
+		flash("成功")
+		return redirect('/admin')
+	return render_template("admindeletewant.html",form=form,dwt=dwt,u=User.query.filter(User.id==dwt.submit_user_id).first())
 
 @app.cli.command()
 @click.option('--id', prompt=True, help='Id')

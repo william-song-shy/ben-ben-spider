@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}删除请求{% endblock %}
+{% block body %}
+<p>
+    该请求由{{u.username}}要求删除由{{dwt.benben.username}}发布的犇犇：{{dwt.benben.text|safe}}
+</p>
+<p>
+    请求发布于{{ moment(dwt.submit_time).format("YYYY-MM-DD HH:mm:ss")}}，原因为：{{dwt.reason}}
+</p>
+<form class="ui form" method="POST">
+    {{ form.csrf_token }}
+				{%- for fieldname, errors in form.errors.items() %}
+					{%- for error in errors %}
+						<script>
+							swal("验证失败","{{error}}","error");
+						</script>
+					{%- endfor %}
+				{%- endfor %}
+    <div class="inline fields">
+        <label for="appr">请选择是否通过</label>
+        <div class="field">
+            <div class="ui radio checkbox">
+                <input type="radio" name="appr" id="appr-0" value="0">
+                <label for="appr-0">通过</label>
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui radio checkbox">
+                <input type="radio" name="appr" id="appr-1" value="1">
+                <label for="appr-1">拒绝</label>
+            </div>
+        </div>
+    </div>
+    <div class="field" >
+        <label>
+            留言:
+        </label>
+        <textarea id="massage" name="massage" required="" >这里输入留言，不超过75个字符</textarea>
+    </div>
+    <button class = "ui primary button" id="submit" name="submit" type="submit" >提交</button>
+</form>
+{% endblock body %}

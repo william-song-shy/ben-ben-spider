@@ -24,6 +24,7 @@ Bootstrap-Flask = "^1.5.1"
 flask-bootstrap = "^3.3.7"
 Flask-Login = "^0.5.0"
 flask-moment = "^0.11.0"
+mysql-connector = "^2.2.9"
 
 [tool.poetry.dev-dependencies]
 

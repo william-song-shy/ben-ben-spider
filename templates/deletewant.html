@@ -2,7 +2,7 @@
 {% block title %}删除请求{% endblock %}
 {% block body %}
 <p>
-    该请求要求删除由{{dwt.benben.username}}发布的犇犇：{{dwt.benben.text|safe}}
+    该请求由{{u.username}}要求删除由{{dwt.benben.username}}发布的犇犇：{{dwt.benben.text|safe}}
 </p>
 <p>
     请求发布于{{ moment(dwt.submit_time).format("YYYY-MM-DD HH:mm:ss")}}，原因为：{{dwt.reason}}

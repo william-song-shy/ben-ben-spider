@@ -39,6 +39,7 @@ class DeleteWant(db.Model):
     approved_message=db.Column(db.Text)
     submit_time=db.Column(db.DateTime,default=datetime.datetime.now)
     approved_time=db.Column(db.DateTime)
+    submit_user_id = db.Column(db.Integer)
 
 class User (db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
