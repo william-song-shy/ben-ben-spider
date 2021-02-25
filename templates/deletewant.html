@@ -17,4 +17,7 @@
     已通过，留言：{{dwt.approved_message}}
     {% endif %}
 </p>
+{% if current_user.is_admin %}
+<a href="{{url_for('admindeletewant',id=dwt.id)}}">点此进行审核</a>
+{% endif %}
 {% endblock body %}

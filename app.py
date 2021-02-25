@@ -431,12 +431,11 @@ def deletewantnew():
 		dwt.reason=form.reason.data
 		dwt.submit_user_id=current_user.id
 		benben.deletewant=dwt
+		#if current_user.is_admin:
+		#	benben.deleted = True
+		#	dwt.approved=1
+		#	dwt.approved_message="管理员请求，自动通过"
 		db.session.add(dwt)
-		db.session.commit()
-		if current_user.is_admin:
-			dwt.benben.deleted = True
-			dwt.approved=1
-			dwt.approved_message="管理员请求，自动通过"
 		db.session.commit()
 		flash ("成功")
 		return redirect(url_for('deletewant',id=dwt.id))
@@ -483,17 +482,14 @@ def admindeletewant(id):
 		flash("已处理")
 		return redirect('/')
 	class queryform(FlaskForm):
-		appr=RadioField("是否通过",validators=[DataRequired()])
 		massage=TextAreaField("留言",validators=[DataRequired()],)
-		submit = SubmitField('提交')
+		approve = SubmitField('通过')
+		deny = SubmitField('拒绝')
 	form=queryform()
-	form.appr.choices=[(0,"通过"),(1,"拒绝")]
 	#if request.method=='POST':
 	#	return form.appr.data
 	if form.validate_on_submit():
-		appr=form.appr.data
-		return appr
-		if appr=="approved":
+		if form.approve.data:
 			dwt.approved=1
 			dwt.benben.deleted=True
 		else:
@@ -501,7 +497,7 @@ def admindeletewant(id):
 		dwt.approved_message=form.massage.data
 		db.session.commit()
 		flash("成功")
-		return redirect('/admin')
+		return redirect(url_for('deletewant',id=dwt.id))
 	return render_template("admindeletewant.html",form=form,dwt=dwt,u=User.query.filter(User.id==dwt.submit_user_id).first())
 
 @app.cli.command()

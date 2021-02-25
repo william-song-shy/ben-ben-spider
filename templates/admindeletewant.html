@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}删除请求{% endblock %}
 {% block body %}
+<p style="color:red">
+    警告，一经审核不可修改，请<strong>仔细审查犇犇内容</strong>后做出决定！
+</p>
 <p>
     该请求由{{u.username}}要求删除由{{dwt.benben.username}}发布的犇犇：{{dwt.benben.text|safe}}
 </p>
@@ -16,27 +19,16 @@
 						</script>
 					{%- endfor %}
 				{%- endfor %}
-    <div class="inline fields">
-        <label for="appr">请选择是否通过</label>
-        <div class="field">
-            <div class="ui radio checkbox">
-                <input type="radio" name="appr" id="appr-0" value="0">
-                <label for="appr-0">通过</label>
-            </div>
-        </div>
-        <div class="field">
-            <div class="ui radio checkbox">
-                <input type="radio" name="appr" id="appr-1" value="1">
-                <label for="appr-1">拒绝</label>
-            </div>
-        </div>
-    </div>
     <div class="field" >
         <label>
             留言:
         </label>
         <textarea id="massage" name="massage" required="" >这里输入留言，不超过75个字符</textarea>
     </div>
-    <button class = "ui primary button" id="submit" name="submit" type="submit" >提交</button>
+    <div class="inline fields">
+        <label >请选择是否通过</label>
+        <input class="positive ui button" id="approve" name="approve" type="submit" value="通过">
+        <input class="negative ui button" id="deny" name="deny" type="submit" value="拒绝">
+    </div>
 </form>
 {% endblock body %}
