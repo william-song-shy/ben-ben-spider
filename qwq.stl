@@ -1,0 +1,44 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE delete_want (
+	id INTEGER NOT NULL, 
+	approved BOOLEAN, reason TEXT, approved_message TEXT, approved_time DATETIME, submit_time DATETIME, submit_user_id INTEGER, 
+	PRIMARY KEY (id), 
+	CHECK (approved IN (-1,0, 1))
+);
+INSERT INTO delete_want VALUES(1,1,'涉黄','确实如此','2021-02-23 03:38:11.170390','2021-02-23 03:36:01.424633',NULL);
+INSERT INTO delete_want VALUES(2,1,'太假了','确实太假了，可以删除','2021-02-23 05:58:50.716282','2021-02-23 05:49:09.630484',NULL);
+INSERT INTO delete_want VALUES(3,0,'shy 最帅！',NULL,NULL,'2021-02-23 06:02:53.281226',NULL);
+INSERT INTO delete_want VALUES(4,1,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),'通过','2021-02-23 06:14:46.876302','2021-02-23 06:14:23.259403',NULL);
+INSERT INTO delete_want VALUES(5,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        test一下新功能^_^','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-23 06:17:38.471726',NULL);
+INSERT INTO delete_want VALUES(6,0,replace(replace('test\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-23 06:18:04.324158',NULL);
+INSERT INTO delete_want VALUES(7,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-23 06:43:09.747191',NULL);
+INSERT INTO delete_want VALUES(8,0,'这人太弱了',NULL,NULL,'2021-02-23 06:47:40.635802',NULL);
+INSERT INTO delete_want VALUES(9,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-23 07:06:45.438818',NULL);
+INSERT INTO delete_want VALUES(10,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        0','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-23 08:22:57.526702',NULL);
+INSERT INTO delete_want VALUES(11,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:06:12.713596',NULL);
+INSERT INTO delete_want VALUES(12,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:07:11.587889',NULL);
+INSERT INTO delete_want VALUES(13,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:07:20.709856',NULL);
+INSERT INTO delete_want VALUES(14,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:07:29.986626',NULL);
+INSERT INTO delete_want VALUES(15,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:08:17.737629',NULL);
+INSERT INTO delete_want VALUES(16,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:11:04.417511',NULL);
+INSERT INTO delete_want VALUES(17,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:11:05.505318',NULL);
+INSERT INTO delete_want VALUES(18,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:11:47.480635',NULL);
+INSERT INTO delete_want VALUES(19,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:12:46.236234',NULL);
+INSERT INTO delete_want VALUES(20,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 01:12:50.112395',NULL);
+INSERT INTO delete_want VALUES(21,0,replace(replace('            这里输入删除原因，不超过75个字符\r\n        ','\r',char(13)),'\n',char(10)),NULL,NULL,'2021-02-24 04:33:51.440225',NULL);
+INSERT INTO delete_want VALUES(22,0,'假死了',NULL,NULL,'2021-02-24 05:35:46.207283',NULL);
+INSERT INTO delete_want VALUES(23,0,'    他看不起没勾的人',NULL,NULL,'2021-02-24 06:30:47.447744',NULL);
+INSERT INTO delete_want VALUES(24,0,'shy ?????',NULL,NULL,'2021-02-24 07:26:02.386878',NULL);
+INSERT INTO delete_want VALUES(25,1,'不建议','管理员请求，自动通过',NULL,'2021-02-25 03:50:23.740413',2);
+INSERT INTO delete_want VALUES(26,1,'test','管理员请求，自动通过',NULL,'2021-02-25 03:51:09.260777',2);
+INSERT INTO delete_want VALUES(27,1,'删除。','管理员请求，自动通过',NULL,'2021-02-25 05:38:39.274271',2);
+INSERT INTO delete_want VALUES(28,1,'爬爬爬爬爬爬爬爬','管理员请求，自动通过',NULL,'2021-02-25 07:24:00.819619',1);
+INSERT INTO delete_want VALUES(29,1,'智障','管理员请求，自动通过',NULL,'2021-02-25 07:24:16.897069',1);
+INSERT INTO delete_want VALUES(30,1,'爬爬爬爬爬爬爬爬','管理员请求，自动通过',NULL,'2021-02-25 07:24:26.096186',1);
+INSERT INTO delete_want VALUES(31,1,'SBSBSBSBSBSB','管理员请求，自动通过',NULL,'2021-02-25 07:24:45.834233',1);
+INSERT INTO delete_want VALUES(32,0,'fucksonghongyi',NULL,NULL,'2021-02-25 07:29:38.655759',16);
+INSERT INTO delete_want VALUES(33,0,'hahaha!',NULL,NULL,'2021-02-25 07:30:26.887876',15);
+INSERT INTO delete_want VALUES(34,0,'songhongyi akioi',NULL,NULL,'2021-02-25 07:30:58.243650',16);
+INSERT INTO delete_want VALUES(35,0,'lzr akioi',NULL,NULL,'2021-02-25 07:31:14.122650',16);
+COMMIT;

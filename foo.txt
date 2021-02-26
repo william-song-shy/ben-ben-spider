@@ -1,1 +1,1 @@
-HTTPSConnectionPool(host='www.luogu.com.cn', port=443): Max retries exceeded with url: /feed/all (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000020E2EEBA070>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))
+HTTPSConnectionPool(host='www.luogu.com.cn', port=443): Max retries exceeded with url: /feed/all (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f031a33e7f0>: Failed to establish a new connection: [Errno 110] Connection timed out'))

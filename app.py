@@ -54,6 +54,8 @@ moment.init_app(app)
 def load_user(user_id):
     user=User.query.get(int(user_id))
     return user
+login_manager.login_view='login'
+login_manager.login_message='请先登录'
 @app.route("/", methods=['GET', 'POST'])
 def main():
 	cur = datetime.datetime.utcnow()
