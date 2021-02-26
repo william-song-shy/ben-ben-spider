@@ -3,6 +3,7 @@ from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,
 from flask_login import LoginManager, UserMixin,current_user,login_user,logout_user,login_required
 from flask_moment import Moment
 import threading
+from functools import wraps
 from sqlalchemy import extract,func,desc
 import datetime
 import random
@@ -54,6 +55,21 @@ moment.init_app(app)
 def load_user(user_id):
     user=User.query.get(int(user_id))
     return user
+login_manager.login_view='login'
+login_manager.login_message='请先登录'
+
+def unconfimerd ():
+	flash("请先进行认证")
+	return redirect('/checkpaste')
+
+def confimerd_required (func):
+	@wraps(func)
+	def decorated_view(*args, **kwargs):
+		if not current_user.is_confirmed():
+			return unconfimerd()
+		return func(*args, **kwargs)
+	return decorated_view
+
 @app.route("/", methods=['GET', 'POST'])
 def main():
 	cur = datetime.datetime.utcnow()
@@ -278,8 +294,12 @@ class CheckPaste ():
 			raise ValidationError('内容错误')
 			return
 
-@app.route("/testpaste", methods=['GET', 'POST'])
-def test_paste ():
+@app.route("/checkpaste", methods=['GET', 'POST'])
+@login_required
+def check_paste ():
+	if current_user.is_confirmed():
+		flash("您已认证")
+		return redirect('/')
 	class queryform (FlaskForm):
 		username = StringField(
 			'用户名', validators=[DataRequired(), Length(1, 20)])
@@ -290,8 +310,17 @@ def test_paste ():
 		submit = SubmitField('查询')
 	form=queryform()
 	if form.validate_on_submit():
-		return redirect('help')
-	return render_template("test_paste.html",form=form)
+		luser=LuoguUser.query.filter(LuoguUser.uid==form.luoguid.data).first()
+		if not luser:
+			flash("洛谷用户不存在，请尝试加入")
+			return render_template("check_paste.html", form=form)
+		if luser.user:
+			flash ("该用户已被认证！")
+			return redirect('/')
+		current_user.luogu_user=luser
+		db.session.commit()
+		return redirect('/')
+	return render_template("check_paste.html",form=form)
 
 @app.route("/api/checkbenben")
 def api_checkbenben():
@@ -333,7 +362,7 @@ def api_checkbenben():
 	return str(cnt),200,{"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"Origin, X-Requested-With, Content-Type, Accept",'Access-Control-Allow-Methods': 'PUT,POST,GET,DELETE,OPTIONS'}
 
 @app.route ("/admin")
-@login_required
+@confimerd_required
 def admin ():
     if not current_user.is_admin:
         flash ("无权限！爬！！！！")
@@ -409,7 +438,7 @@ def logout ():
     return redirect('/')
 
 @app.route("/deletewant/new",methods=['GET','POST'])
-@login_required
+@confimerd_required
 def deletewantnew():
 	benbenid=request.args.get('bid',-1,type=int)
 	if (benbenid==-1):
@@ -443,7 +472,7 @@ def deletewantnew():
 	return render_template('deletewantnew.html',benben=benben,form=form)
 
 @app.route('/deletewant/list')
-@login_required
+@confimerd_required
 def deletewantlist():
 	page=request.args.get('page',1,type=int)
 	if not current_user.is_admin:
@@ -454,7 +483,7 @@ def deletewantlist():
 	return render_template("deletewantlist.html", pagination=p, messages=p.items)
 
 @app.route("/deletewant/<int:id>")
-@login_required
+@confimerd_required
 def deletewant(id):
 	dwt=DeleteWant.query.filter(DeleteWant.id==id).first()
 	if not dwt:
@@ -469,7 +498,7 @@ def deletewant(id):
 	return render_template("deletewant.html",dwt=dwt,u=User.query.filter(User.id==dwt.submit_user_id).first())
 
 @app.route('/admin/deletewant/<int:id>',methods=['GET','POST'])
-@login_required
+@confimerd_required
 def admindeletewant(id):
 	if not current_user.is_admin:
 		flash("无权限！爬！！！！")

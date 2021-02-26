@@ -54,6 +54,9 @@ class User (db.Model,UserMixin):
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def is_confirmed(self):
+        return bool(self.luogu_id!=None)
+
 def jiexi(r):
     html = r.text
     soup = BeautifulSoup(html, 'html.parser')
