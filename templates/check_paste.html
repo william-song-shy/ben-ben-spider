@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}checkpaste{% endblock %}
 {% block body %}
-<form method="POST">
+<form method="POST" class="ui form">
 	            {{ form.csrf_token }}
 				{%- for fieldname, errors in form.errors.items() %}
 					{%- for error in errors %}
@@ -10,24 +10,24 @@
 						</script>
 					{%- endfor %}
 				{%- endfor %}
-	            <div class="ui labeled input" style="text-align: center;">
-					<div class="ui label">
+	            <div class="field" style="display:none !important">
+					<label>
 						用户名:
-					</div>
-					<input id="username" name="username" required="" type="text" value="">
+					</label>
+					<input id="username" name="username" required="" type="text" value="{{current_user.username}}"  readonly="">
 				</div>
-    <div class="ui labeled input" style="text-align: center;">
-					<div class="ui label">
+    <div class="field" >
+					<label>
 						luogu_id:
-					</div>
+					</label>
 					<input id="luoguid" name="luoguid" required="" type="text" value="">
 				</div>
-    <div class="ui labeled input" style="text-align: center;">
-					<div class="ui label">
+    <div class="field" >
+					<label>
 						剪贴板ID:
-					</div>
+					</label>
 					<input id="paste" name="paste" required="" type="text" value="">
 				</div>
-	            <input class = "ui primary button" id="submit" name="submit" type="submit" value="查询">
+	<button class = "ui primary button" id="submit" name="submit" type="submit" >认证</button>
 	        </form>
 {% endblock body%}

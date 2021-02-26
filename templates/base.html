@@ -8,7 +8,7 @@
 		<script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='semantic/semantic.min.css')}}">
-		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="{{url_for('static',filename='semantic/semantic.min.js')}}"></script>
         <script src="{{url_for('static',filename='md5.js')}}"></script>
 		{{ moment.include_moment() }}
@@ -45,6 +45,24 @@
 			</div>
 		</div>
 		<div class="ui container" style="margin-top: 55px; " >
+			{% if current_user.is_authenticated and not current_user.is_confirmed() and request.endpoint!='check_paste'%}
+			<div class="ui negative message">
+				<i class="close icon"></i>
+				<div class="header">
+					请您<a href="/checkpaste">进行验证</a>，否则将无权限操作
+				</div>
+			</div>
+			<script>
+				$('.message .close')
+									  .on('click', function() {
+										$(this)
+										  .closest('.message')
+										  .transition('fade')
+										;
+									  })
+									;
+								</script>
+			{% endif %}
 	        {{ render_messages(container=False, dismissible=True) }}
 	        {% block body %}{% endblock %}
     	</div>
