@@ -3,7 +3,7 @@
 {%block title %}指定时间段的排行榜{% endblock %}
 {% block body %}
 <h2 class="ui header" style="text-align: center;">
-			从{{begin}}到{{end}}的排行榜
+			从{{moment(begin).format("YYYY-MM-DD HH:mm:ss")}}到{{moment(end).format("YYYY-MM-DD HH:mm:ss")}}的排行榜
 	</h2>
 	<table class="ui celled table" style="text-align: center;">
 		<thead>

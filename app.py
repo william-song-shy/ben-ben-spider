@@ -26,9 +26,9 @@ DIALECT = 'mysql'
 DRIVER = 'pymysql'
 USERNAME = 'root'
 PASSWORD = environ.get('mysqlpassword')
-HOST = '114.116.248.90'
+HOST = '167.179.103.247'
 PORT = '3306'
-DATABASE = 'benben'
+DATABASE = 'ben_ben_spider'
 #app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT,DATABASE)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -65,7 +65,9 @@ def unconfimerd ():
 def confimerd_required (func):
 	@wraps(func)
 	def decorated_view(*args, **kwargs):
-		if not current_user.is_confirmed():
+		if not current_user.is_authenticated:
+			return login_manager.unauthorized()
+		elif not current_user.is_confirmed():
 			return unconfimerd()
 		return func(*args, **kwargs)
 	return decorated_view
@@ -257,7 +259,7 @@ def timequery():
 		submit = SubmitField('查询')
 	form = timequeryform()
 	if form.validate_on_submit():
-		return redirect("/ranklist?begin={}&end={}".format(int (time.mktime(form.begin.data.timetuple())),int (time.mktime(form.end.data.timetuple()))))
+		return redirect("/ranklist?begin={}&end={}".format(int (time.mktime((form.begin.data-datetime.timedelta(hours=8)).timetuple())),int (time.mktime((form.end.data-datetime.timedelta(hours=8)).timetuple()))))
 	return render_template("timequery.html", form=form)
 
 class ValidationError (ValueError):
@@ -333,7 +335,7 @@ def api_checkbenben():
 		time.sleep(5)
 		benbens = requests.get('https://www.luogu.com.cn/api/feed/list?user={}&page={}'.format(uid,page),headers=headers).json()
 	benbens=benbens['feeds']['result']
-	cur = datetime.datetime.now()
+	cur = datetime.datetime.utcnow()
 	cnt=0
 	for i in benbens[::-1]:
 		text=markdown.markdown(i['content'])
@@ -553,3 +555,11 @@ def api_list_all():
     page=request.args.get('page',1,type=int)
     p = BenBen.query.with_entities(BenBen.id,BenBen.uid,BenBen.username,BenBen.text,BenBen.time).filter(BenBen.deleted == False).order_by(desc(BenBen.time)).paginate(page, per_page=20, error_out=False)
     return jsonify(p.items)
+
+@app.route("/userl/<int:id>")
+def userl (id):
+	user=User.query.filter(User.id==id).first()
+	if not user:
+		flash("用户不存在")
+		return
+	return render_template("userl.html",user=user)

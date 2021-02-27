@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}用户界面{% endblock %}
+{% block body %}
+<p>用户名为：{{user.username}}</p>
+{% if user.is_admin %}
+<p>这个用户是管理员</p>
+{% endif %}
+{% if user.is_confirmed() %}
+<p>这个用户已认证，为洛谷用户<a href="/user/{{user.luogu_user.uid}}">{{user.luogu_user.username}}</a></p>
+{% endif %}
+{% if user.id!=1 %}
+<p>
+    <strong>这个用户 AK 了 IOI!</strong>
+</p>
+{% endif %}
+{% endblock %}

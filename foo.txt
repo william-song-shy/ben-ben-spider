@@ -1,1 +1,1 @@
-('Connection aborted.', TimeoutError(110, 'Connection timed out'))
+('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))

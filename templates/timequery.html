@@ -3,11 +3,23 @@
 {% block title %}时间查询{% endblock %}
 ​{% block body %} 
 	<p style="text-align: center;">
-		时间格式：%Y-%m-%d %H:%M:%S<br>如:1919-08-10 11:45:14<br>与洛谷犇犇的时间格式相同<br>对于月，日，时，分，秒，一位数应该在前补0，如1919-8-10 11:45:14就是错误的。
+		时间格式：%Y-%m-%d %H:%M:%S<br>如:1919-08-10 11:45:14<br>与洛谷犇犇的时间格式相同
 	</p>
-	<form method="POST">
+	<form class="ui form" method="POST">
 					{{ form.csrf_token }}
-					{{ render_form_row ([form.begin,form.end],col_class_default='col-md-2')}}
-					{{ render_field(form.submit) }}
+	<div class="field" >
+					<label>
+						开始时间:
+                    </label>
+					<input id="begin" name="begin" required="" type="text" value="">
+				</div>
+<div class="field" >
+					<label>
+						结束时间:
+                    </label>
+					<input id="end" name="end" required="" type="text" value="">
+</div>
+		    <button class = "ui primary button" id="submit" name="submit" type="submit" >查询</button>
+
 	</form>
 {% endblock body %}
