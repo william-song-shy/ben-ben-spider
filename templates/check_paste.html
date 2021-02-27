@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}checkpaste{% endblock %}
+{% block title %}验证账号{% endblock %}
 {% block body %}
 <form method="POST" class="ui form">
 	            {{ form.csrf_token }}
@@ -30,4 +30,8 @@
 				</div>
 	<button class = "ui primary button" id="submit" name="submit" type="submit" >认证</button>
 	        </form>
+<p>
+	操作说明：在洛谷发布一个内容为<strong>{{current_user.username}}</strong>的云剪贴板，不用加粗，然后在这里输入您的洛谷UID和剪贴板的id(地址后的八位字符串)即可。<br>
+	若有问题请联系songhongyi
+</p>
 {% endblock body%}

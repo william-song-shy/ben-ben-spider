@@ -14,6 +14,9 @@
 		    迫害Ta
         {% endif %}
 	</button>
+	{% if current_user.is_admin %}
+	<button class="ui primary button" id="check-10">更新最近的200条犇犇（慎用）</button>
+	{% endif %}
 	<a href="https://www.luogu.com.cn/user/{{uid}}" class="ui primary button">
 		前往洛谷个人主页
 	</a>
@@ -47,6 +50,29 @@
 				setTimeout('$("#pohai").html("迫害Ta")',1500);
 			})
 		})
+		{% if current_user.is_admin %}
+		function sleep (time) {
+    	return new Promise((resolve) => setTimeout(resolve, time));
+    	}
+    	$("#check-10").on('click',async function(){
+    	var cnt=0;
+    	for (let i=0;i<10;i++)
+    	{
+    		await sleep(500);
+    		$.get('/api/checkbenben?uid={{uid}}&page='+i,function(data,status)
+			{
+				if(status=='success')
+				{
+					console.log("第"+(i+1)+"页更新了"+data+"条")
+					cnt+=parseInt(data)
+				}
+				else
+				{
+					console.error("错误")
+				}
+			})
+    	}})
+    	{% endif %}
     </script>
     {% for i in benbens %}
 		<p style="text-align: center;">
