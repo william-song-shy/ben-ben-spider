@@ -10,6 +10,16 @@
 <p>
     请求发布于{{ moment(dwt.submit_time).format("YYYY-MM-DD HH:mm:ss")}}，原因为：{{dwt.reason}}
 </p>
+<p>
+    目前状态为：
+    {% if dwt.approved == 0 %}
+    尚未审核
+    {% elif dwt.approved == -1 %}
+    已拒绝，原因：{{dwt.approved_message}}
+    {% else  %}
+    已通过，留言：{{dwt.approved_message}}
+    {% endif %}
+</p>
 <form class="ui form" method="POST">
     {{ form.csrf_token }}
 				{%- for fieldname, errors in form.errors.items() %}
