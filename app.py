@@ -1,3 +1,4 @@
+#-*- coding: utf-8
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,abort,session
 from flask_login import LoginManager, UserMixin,current_user,login_user,logout_user,login_required
@@ -29,8 +30,8 @@ PASSWORD = environ.get('mysqlpassword')
 HOST = '167.179.103.247'
 PORT = '3306'
 DATABASE = 'ben_ben_spider'
-#app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT,DATABASE)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT,DATABASE)
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 from luogu_spider import doing,BenBen,LuoguUser,User,DeleteWant
