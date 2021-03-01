@@ -510,8 +510,11 @@ def admindeletewant(id):
 	if not dwt:
 		flash("不存在")
 		return redirect('/')
-	if dwt.approved!=0:
+	if dwt.approved!=0 and not current_user.super_admin:
 		flash("已处理")
+		return redirect('/')
+	if dwt.submit_user_id == current_user.id and not current_user.super_admin:
+		flash ("这是您发布的请求，禁止审核自己的请求，请找另一管理")
 		return redirect('/')
 	class queryform(FlaskForm):
 		massage=TextAreaField("留言",validators=[DataRequired()],)
@@ -562,5 +565,24 @@ def userl (id):
 	user=User.query.filter(User.id==id).first()
 	if not user:
 		flash("用户不存在")
-		return
+		return redirect('/')
 	return render_template("userl.html",user=user)
+
+@app.route ('/admin/userl/<int:id>',methods=['GET','POST'])
+@confimerd_required
+def adminuserl (id):
+	if not current_user.super_admin:
+		flash("无权限，爬！")
+		return redirect('/')
+	user = User.query.filter(User.id == id).first()
+	if not user:
+		flash("用户不存在")
+		return redirect('/')
+	class QueryForm(FlaskForm):
+		adming=SubmitField('给予管理')
+	form=QueryForm()
+	if form.validate_on_submit():
+		if form.adming.data:
+			user.is_admin=not user.is_admin
+			db.session.commit()
+	return render_template('adminuserl.html',form=form,user=user)
