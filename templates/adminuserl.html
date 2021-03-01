@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 {% block title %}管理用户{% endblock %}
 {% block body %}
@@ -13,4 +14,21 @@
 {% endif %}
         </div>
 </form>
+=======
+{% extends 'base.html' %}
+{% block title %}管理用户{% endblock %}
+{% block body %}
+给用户  {{user.username}}  更改权限
+<form class="ui form" method="POST">
+    {{ form.csrf_token }}
+    <div class="field">
+
+{% if not user.is_admin %}
+<input class="positive ui button" id="adming" name="adming" type="submit" value="给予管理">
+{% else %}
+<input class="negative ui button" id="adming" name="adming" type="submit" value="撤销管理">
+{% endif %}
+        </div>
+</form>
+>>>>>>> b148f0702caf35636b443e7e6026ea8c538dc382
 {% endblock body %}
