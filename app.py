@@ -34,7 +34,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".fo
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-from luogu_spider import doing,BenBen,LuoguUser,User,DeleteWant
+from luogu_spider import doing,BenBen,LuoguUser,User,DeleteWant,LoginRecord,Notification
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField,DateTimeField, TextAreaField,PasswordField,BooleanField,RadioField
@@ -58,6 +58,8 @@ def load_user(user_id):
     return user
 login_manager.login_view='login'
 login_manager.login_message='请先登录'
+
+#app.jinja_env.globals['urdnoti']=
 
 def unconfimerd ():
 	flash("请先进行认证")
@@ -120,7 +122,8 @@ def user(uid):
 		return redirect(url_for('main'))
 	ph = u.beipohai
 	#print (u.allow_paiming)
-	u = BenBen.query.filter(BenBen.uid==uid,BenBen.deleted==False)
+	yulus=BenBen.query.filter(BenBen.uid==uid,BenBen.yulu==True).order_by(BenBen.time).all()
+	u = BenBen.query.filter(BenBen.uid==uid,BenBen.deleted==False,BenBen.yulu==False).order_by(BenBen.time)
 	v = BenBen.query.filter(
 		extract('year', BenBen.time) == cur.year,
 		extract('month', BenBen.time) == cur.month,
@@ -133,7 +136,7 @@ def user(uid):
 		extract('day', BenBen.time) == cur.day,
 		LuoguUser.allow_paiming == True
 	).group_by(BenBen.uid).order_by(desc(func.count())).having(func.count()>v).count()
-	return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid)
+	return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid,yulus=yulus)
 
 
 @app.route("/help")
@@ -376,6 +379,19 @@ def admin ():
     #return render_template("admin.html",l=l.items,len=len);
     return render_template("admin.html",l=l,len=len)
 
+@app.route ('/testip')
+def testip():
+    if request.headers.getlist("X-Forwarded-For"):
+        ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        ip = request.remote_addr
+    return ip
+
+def iptoint (s:str):
+	s=s.split('.')
+	s=[int (i) for i in s]
+	return s[0]*16777216+s[1]*65536+s[2]*256+s[3]
+
 @app.route('/login',methods=['GET','POST'])
 def login ():
     class LoginForm(FlaskForm):
@@ -396,6 +412,15 @@ def login ():
         if user:
             if user.validate_password(password):
                 login_user(user,remember)
+                if request.headers.getlist("X-Forwarded-For"):
+                    ip = request.headers.getlist("X-Forwarded-For")[0]
+                else:
+                    ip = request.remote_addr
+                lrc=LoginRecord()
+                lrc.ip=iptoint(ip)
+                db.session.add(lrc)
+                lrc.user=current_user
+                db.session.commit()
                 return redirect('/')
             else:
                 flash("密码错误")
@@ -463,10 +488,10 @@ def deletewantnew():
 		dwt.reason=form.reason.data
 		dwt.submit_user_id=current_user.id
 		benben.deletewant=dwt
-		#if current_user.is_admin:
-		#	benben.deleted = True
-		#	dwt.approved=1
-		#	dwt.approved_message="管理员请求，自动通过"
+		if current_user.super_admin:
+			benben.deleted = True
+			dwt.approved=1
+			dwt.approved_message="管理员请求，自动通过"
 		db.session.add(dwt)
 		db.session.commit()
 		flash ("成功")
@@ -568,6 +593,15 @@ def userl (id):
 		return redirect('/')
 	return render_template("userl.html",user=user)
 
+def inttoip (s:int):
+	t=""
+	t+=str(s//16777216)
+	s%=16777216
+	t+='.'+str(s//65536)+'.'
+	s%=65536
+	t+=str(s//256)+'.'+str(s%256)
+	return t
+
 @app.route ('/admin/userl/<int:id>',methods=['GET','POST'])
 @confimerd_required
 def adminuserl (id):
@@ -578,6 +612,7 @@ def adminuserl (id):
 	if not user:
 		flash("用户不存在")
 		return redirect('/')
+	lrds=LoginRecord.query.join(LoginRecord.user).with_entities(func.count().label('count'), LoginRecord.ip,LoginRecord.time).filter(LoginRecord.user_id==user.id).group_by(LoginRecord.ip).order_by(desc(func.count()))
 	class QueryForm(FlaskForm):
 		adming=SubmitField('给予管理')
 	form=QueryForm()
@@ -585,4 +620,38 @@ def adminuserl (id):
 		if form.adming.data:
 			user.is_admin=not user.is_admin
 			db.session.commit()
-	return render_template('adminuserl.html',form=form,user=user)
+	return render_template('adminuserl.html',form=form,user=user,lrds=lrds,inttoip=inttoip)
+
+@app.route("/api/adduser/<int:id>")
+def add_user (id):
+	user = LuoguUser.query.filter(LuoguUser.uid == id).first()
+	if user:
+		return jsonify({"status":"fail","message":"User exists"})
+	user=LuoguUser()
+	headers = {'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"}
+	data=requests.get("https://www.luogu.com.cn/api/user/search?keyword={}".format(id),headers=headers).json()
+	data=data['users'][0]
+	user.uid=id
+	user.username=data['name']
+	db.session.add(user)
+	db.session.commit()
+	return jsonify({"status":"success"})
+
+@app.route("/status")
+def status ():
+	bcount=BenBen.query.count()
+	ulcount=User.query.count()
+	lucount=LuoguUser.query.count()
+	admins=User.query.filter(User.is_admin==1).all()
+	cfdulcount=User.query.filter(User.luogu_user).count()
+	return render_template("status.html",len=len,bcount=format(bcount,','),ulcount=format(ulcount,','),lucount=format(lucount,','),cfdulcount=format(cfdulcount,','),admins=admins)
+
+@app.route("/notification")
+@login_required
+def notification():
+	ntfcs=Notification.query.filter(Notification.recipient_id==current_user.id)
+	ntl=ntfcs.all()
+	urds=Notification.query.filter(Notification.recipient_id==current_user.id,Notification.readed==False).all()
+	ntfcs.update({'readed':True})
+	db.session.commit()
+	return render_template('notification.html',ntl=ntl,urds=urds)

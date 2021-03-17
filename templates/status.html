@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}统计{% endblock %}
+{% block body %}
+<div class="ui relaxed grid">
+<div class="six wide column">
+<div class="ui center aligned segment">
+  <div class="ui statistic">
+    <div class="value">
+      {{bcount}}
+    </div>
+    <div class="label">
+      犇犇
+    </div>
+  </div>
+  <div class="ui statistic">
+    <div class="value">
+      {{lucount}}
+    </div>
+    <div class="label">
+      收录的洛谷用户
+    </div>
+  </div>
+  <div class="ui statistic">
+    <div class="value">
+      {{ulcount}}
+    </div>
+    <div class="label">
+      已注册用户
+    </div>
+  </div>
+  <div class="ui statistic">
+    <div class="value">
+      {{cfdulcount}}
+    </div>
+    <div class="label">
+      已认证用户
+    </div>
+  </div>
+</div>
+</div>
+<div class="six wide column">
+<div class="ui center aligned segment">
+  <div class="ui statistic">
+    <div class="value">
+      {{len(admins)}}
+    </div>
+    <div class="label">
+      位管理
+    </div>
+  </div>
+  <div class="ui divided items">
+  {% for i in admins %}
+    <div class="item">
+      <div class="middle aligned content">
+        <img class="ui avatar image" src="https://cdn.luogu.com.cn/upload/usericon/{{i.luogu_user.uid}}.png">
+        &nbsp;&nbsp;&nbsp;
+        <a href="/userl/{{i.id}}">{{i.username}}</a>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+</div>
+</div>
+<div class="two wide column">还不知道写点啥</div>
+<div class="two wide column">还不知道写点啥</div>
+</div>
+{% endblock %}

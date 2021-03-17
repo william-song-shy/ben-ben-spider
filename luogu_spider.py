@@ -4,10 +4,17 @@ from bs4 import BeautifulSoup
 import datetime
 import time
 from sqlalchemy import extract
+from sqlalchemy.dialects.mysql import INTEGER
 from app import db
+from os import environ, path
+from dotenv import load_dotenv
+basedir = path.abspath(path.dirname(__file__))
+load_dotenv(path.join(basedir, '.env'))
+host=environ.get('host')
 from flask_login import LoginManager, UserMixin,current_user,login_user,logout_user,login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
+import markdown
 
 class BenBen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,6 +27,7 @@ class BenBen(db.Model):
     deleted = db.Column(db.Boolean, default=False)
     deletewant_id = db.Column(db.Integer, db.ForeignKey('delete_want.id'))
     deletewant = db.relationship('DeleteWant', uselist=False, backref='BenBen')
+    yulu = db.Column(db.Boolean, default=False)
 
 
 class LuoguUser(db.Model):
@@ -50,6 +58,8 @@ class User (db.Model,UserMixin):
     password_hash = db.Column(db.String(128))
     is_admin = db.Column(db.Boolean)
     super_admin = db.Column(db.Boolean)
+    loginrecord = db.relationship('LoginRecord')
+    notifications=db.relationship('Notification')
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -58,6 +68,28 @@ class User (db.Model,UserMixin):
 
     def is_confirmed(self):
         return bool(self.luogu_id!=None)
+
+    def urdnt(self):
+        return Notification.query.filter(Notification.recipient_id==self.id,Notification.readed==False).count()
+
+class LoginRecord (db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, db.ForeignKey('user.id'))
+    user= db.relationship('User', uselist=False, backref='LoginRecord')
+    ip = db.Column(INTEGER(unsigned=True))
+    time=db.Column(db.DateTime,default=datetime.datetime.utcnow)
+
+class Notification (db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id=db.Column(db.Integer,index=True)
+    recipient_id=db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient=db.relationship('User', uselist=False, backref='Notification')
+    text=db.Column(db.Text)
+    time=db.Column(db.DateTime,default=datetime.datetime.utcnow)
+    readed=db.Column(db.Boolean, default=False)
+
+    def sender (self):
+        return User.query.get(self.sender_id)
 
 def jiexi(r):
     html = r.text
@@ -107,11 +139,37 @@ def pa():
     r = requests.get('https://www.luogu.com.cn/feed/all', headers=headers)
     return jiexi(r)
 
+def pa_api ():
+    benbens=requests.get(host,headers=headers).json()
+    benbens = benbens['feeds']['result']
+    for i in benbens[::-1]:
+        text = markdown.markdown(i['content'])
+        username = i['user']['name']
+        stime = datetime.datetime.fromtimestamp(i['time'])
+        uid=i['user']['uid']
+        if BenBen.query.filter_by(uid=uid, time=stime).all():
+            continue
+        abb = BenBen()
+        abb.text = text.replace('<p>', "").replace('</p>', "")
+        abb.username = username
+        abb.uid = uid
+        abb.time = stime
+        user = LuoguUser.query.filter_by(uid=uid).first()
+        if user:
+            user.benbens.append(abb)
+            if user.username != username:
+                user.username = username
+        else:
+            user = LuoguUser(username=username, uid=uid)
+            db.session.add(user)
+            user.benbens.append(abb)
+        db.session.add(abb)
+    db.session.commit()
 
 def doing():
     while True:
         try:
-            pa()
+            pa_api()
             time.sleep(5)
         except BaseException as reason:
             fo = open("foo.txt", "w+")

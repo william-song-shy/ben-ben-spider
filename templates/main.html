@@ -74,13 +74,50 @@
     	}})
     	{% endif %}
     </script>
-    {% for i in benbens %}
-		<p style="text-align: center;">
-			@<a href="/user/{{i.uid}}">{{ i.username }}<a></a>:{{ i.text|safe }}
-		</p>
-        <p style="text-align: center;">
-			 发送时间:{{moment(i.time).format	("YYYY-MM-DD HH:mm:ss")}}
-            <a href="/deletewant/new?bid={{i.id}}" >点此申请删除</a>
-        </p>
-    {% endfor %}
+	<div class="ui segment">
+		<p>用户语录</p>
+		<div class="ui comments">
+			{% for i in yulus %}
+				<div class="ui divider"></div>
+				<div class="comment">
+				  <a class="ui circular avatar image" style="height : 35px;width: 35px !important">
+					<img src="https://cdn.luogu.com.cn/upload/usericon/{{i.uid}}.png">
+				  </a>
+				  <div class="content">
+					<a class="author" href="/user/{{i.uid}}" style="color:#4183c4 !important">{{ i.username }}</a>
+					<div class="metadata">
+					  <div class="date">{{moment(i.time).format	("YYYY-MM-DD HH:mm:ss")}}</div>
+					</div>
+					<div class="text">
+					  {{ i.text|safe }}
+					</div>
+				  </div>
+            </div>
+			{% endfor %}
+		</div>
+		<div class="ui divider"></div>
+		<p>以下是该用户的近100条犇犇，可以点击申请删除删除</p>
+		<div class="ui comments">
+			{% for i in benbens %}
+				<div class="ui divider"></div>
+				<div class="comment">
+				  <a class="ui circular avatar image" style="height : 35px;width: 35px !important">
+					<img src="https://cdn.luogu.com.cn/upload/usericon/{{i.uid}}.png">
+				  </a>
+				  <div class="content">
+					<a class="author" href="/user/{{i.uid}}" style="color:#4183c4 !important">{{ i.username }}</a>
+					<div class="metadata">
+					  <div class="date">{{moment(i.time).format	("YYYY-MM-DD HH:mm:ss")}}</div>
+					</div>
+					<div class="text">
+					  {{ i.text|safe }}
+					</div>
+					  <div class="actions">
+						<a class="delete" href="/deletewant/new?bid={{i.id}}">申请删除</a>
+					  </div>
+				  </div>
+            </div>
+			{% endfor %}
+		</div>
+	</div>
 {% endblock body %}

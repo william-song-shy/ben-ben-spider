@@ -13,4 +13,28 @@
 {% endif %}
         </div>
 </form>
+<p>
+    该用户曾使用的IP
+</p>
+<table class="ui celled table">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>IP</th>
+        <th>使用次数</th>
+        <th>最新一次使用时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for i in lrds %}
+    <tr>
+        <td>{{loop.index}}</td>
+        <td>{{inttoip(i.ip)}}</td>
+        <td>{{i.count}}</td>
+        <td>{{moment(i.time).format("YYYY-MM-DD HH:mm:ss")}}</td>
+
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% endblock body %}

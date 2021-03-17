@@ -26,6 +26,15 @@
 				{{ render_nav_item('help', '<i class="help circle icon"> </i> Q&A') }}
                 <div class="right menu">
 					{% if current_user.is_authenticated %}
+					<a class="item" href="/notification">
+
+							<i class="bell icon"></i>
+							通知
+							{% if current_user.urdnt() %}
+							({{current_user.urdnt()}})
+							{% endif %}
+
+					</a>
 					<div class="ui item simple dropdown" >
 						<i class="user icon"></i>
 						{{current_user.username}}
