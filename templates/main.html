@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %} 用户界面 {% endblock %}
-​{% block body %} 
+{% block body %}
 	<p style="text-align: center;">
 		<strong>{% if v != 0 %}今日共{{v}}条消息，排名是第{{pm}}名，{% else %}今天无消息，{% endif %}{% if ph != 0%}被迫害了{{ph}}次{% else %}没有被迫害过{% endif %}。</strong>
 	</p>
@@ -21,6 +21,7 @@
 		前往洛谷个人主页
 	</a>
 	<script type="text/javascript">
+		$("[alt]").attr("class","ui image")
     	$("#check").on('click',function(){
     		$(this).attr("class", "ui primary loading button");
     		$.get('/api/checkbenben?uid={{uid}}',function(data,status){
@@ -76,7 +77,7 @@
     </script>
 	<div class="ui segment">
 		<p>用户语录</p>
-		<div class="ui comments">
+		<div class="ui comments" sty>
 			{% for i in yulus %}
 				<div class="ui divider"></div>
 				<div class="comment">
@@ -97,7 +98,7 @@
 		</div>
 		<div class="ui divider"></div>
 		<p>以下是该用户的近100条犇犇，可以点击申请删除删除</p>
-		<div class="ui comments">
+		<div class="ui comments" style="max-width: 1097px;">
 			{% for i in benbens %}
 				<div class="ui divider"></div>
 				<div class="comment">

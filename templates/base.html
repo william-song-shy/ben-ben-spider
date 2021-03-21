@@ -10,7 +10,8 @@
 		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='semantic/semantic.min.css')}}">
 		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script src="{{url_for('static',filename='semantic/semantic.min.js')}}"></script>
-        <script src="{{url_for('static',filename='md5.js')}}"></script>
+		<meta name="referrer" content="no-referrer">
+		<script src="{{url_for('static',filename='md5.js')}}"></script>
 		{{ moment.include_moment() }}
 		{{ moment.locale('zh-cn') }}　
 	</head>
