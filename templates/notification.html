@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}通知{% endblock %}
+{% block body %}
+<div class="ui feed">
+    用户通知（标黄为未读）
+    {% for i in ntl %}
+    <div class="ui divider"></div>
+    <div class="event" {% if i in urds %} style="background: lightyellow;" {% endif %}>
+        <div class="label">
+            <div class="ui circular avatar image" >
+					<img style="height : 35px !important;width: 35px !important" src="https://cdn.luogu.com.cn/upload/usericon/{{i.sender().luogu_user.uid}}.png">
+            </div>
+        </div>
+        <div class="content">
+            <div class="date">
+                {{moment(i.time).format("YYYY-MM-DD HH:mm:ss")}}
+            </div>
+            <a href="/userl/{{i.sender().id}}">{{i.sender().username}}</a>:{{i.text|safe}}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

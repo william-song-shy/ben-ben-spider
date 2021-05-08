@@ -30,8 +30,8 @@ PASSWORD = environ.get('mysqlpassword')
 HOST = '167.179.103.247'
 PORT = '3306'
 DATABASE = 'ben_ben_spider'
-app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT,DATABASE)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT,DATABASE)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 from luogu_spider import doing,BenBen,LuoguUser,User,DeleteWant,LoginRecord,Notification
@@ -455,6 +455,8 @@ def register ():
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
+            send_notification(content='欢迎您再本站注册！祝您玩的愉快！<br> \n我们建议您尽快在<a href="/checkpaste" >这里</a>完成身份认证！<br> \n如您有任何问题，欢迎您联系<a href="/status">此列表</a>中的任何一位管理，我们很乐意帮您解答。',
+                              recipient_id=user.id)
             flash("成功")
             return redirect('/')
     return render_template('register.html',form=form)
@@ -655,3 +657,11 @@ def notification():
 	ntfcs.update({'readed':True})
 	db.session.commit()
 	return render_template('notification.html',ntl=ntl,urds=urds)
+
+def send_notification (content:str,recipient_id,sender_id=1):
+	temp=Notification()
+	temp.text=content
+	temp.recipient_id=recipient_id
+	temp.sender_id=sender_id
+	db.session.add(temp)
+	db.session.commit()
