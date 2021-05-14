@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 import time
+import threading
 from sqlalchemy import extract
 from sqlalchemy.dialects.mysql import INTEGER
 from app import db
@@ -167,11 +168,14 @@ def pa_api ():
     db.session.commit()
 
 def doing():
-    while True:
-        try:
-            pa_api()
-            time.sleep(5)
-        except BaseException as reason:
-            fo = open("foo.txt", "w+")
-            fo.write(str(reason))
-            fo.close()
+    #try:
+    pa_api()
+    global t
+    t = threading.Timer(5.0, doing)
+    t.start()
+    #except BaseException as reason:
+    #    fo = open("foo.txt", "w+")
+    #    fo.write(str(reason))
+    #    fo.close()
+
+t = threading.Timer(5.0, doing)

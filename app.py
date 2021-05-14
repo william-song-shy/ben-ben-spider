@@ -34,7 +34,7 @@ DATABASE = 'ben_ben_spider'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-from luogu_spider import doing,BenBen,LuoguUser,User,DeleteWant,LoginRecord,Notification
+from luogu_spider import t,BenBen,LuoguUser,User,DeleteWant,LoginRecord,Notification
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField,DateTimeField, TextAreaField,PasswordField,BooleanField,RadioField
@@ -43,9 +43,9 @@ import click
 from flask_migrate import Migrate
 migrate=Migrate(app,db)
 bootstrap = Bootstrap(app)
-thread = threading.Thread(target=doing)
-thread.setDaemon(True)
-thread.start()
+#thread = threading.Thread(target=doing)
+t.setDaemon(True)
+t.start()
 login_manager = LoginManager()
 login_manager.init_app(app)
 limiter = Limiter(app, key_func=get_remote_address)
@@ -162,6 +162,11 @@ def banned():
 		LuoguUser.uid, LuoguUser.username).filter_by(allow_paiming=False).all()
 	return jsonify(users)
 
+@app.cli.command()
+def rstcmb ():
+	t.cancel()
+	time.sleep(2)
+	t.start()
 
 @app.cli.command()
 @click.option('--username', prompt=True, help='Username')
