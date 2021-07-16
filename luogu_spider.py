@@ -8,6 +8,7 @@ from sqlalchemy import extract
 from sqlalchemy.dialects.mysql import INTEGER
 from app import db
 from os import environ, path
+import re
 from dotenv import load_dotenv
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
@@ -140,11 +141,37 @@ def pa():
     r = requests.get('https://www.luogu.com.cn/feed/all', headers=headers)
     return jiexi(r)
 
+def change (stra):
+	model='<iframe scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" src="https://player.bilibili.com/player.html?{}&high_quality=1" style="top: 5px;left: 0;width: 100%;height: 520px;"></iframe>'
+	r=''
+	pos=stra.find('?')
+	if pos!=-1:
+		num=stra[:pos]
+	else:
+		num=stra
+	if num[0:2]=='BV' :
+		r='bvid='+num[2:]
+	else:
+		if num.isdigit():
+			r='aid='+num
+		else:
+			r='aid='+num[2:]
+	if pos!=-1:
+		r+=stra[pos:]
+		r.replace('?','&')
+	return model.format(r)
+
+def jp(st):
+    print (st.group(1))
+    return change (st.group(1))
+
 def pa_api ():
     benbens=requests.get(host,headers=headers).json()
     benbens = benbens['feeds']['result']
     for i in benbens[::-1]:
         text = markdown.markdown(i['content'])
+        r = u'<img alt=".*" src="bilibili:([^"]*)">'
+        text=re.sub(r, jp, text)
         username = i['user']['name']
         stime = datetime.datetime.fromtimestamp(i['time'])
         uid=i['user']['uid']

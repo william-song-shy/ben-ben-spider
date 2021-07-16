@@ -34,7 +34,7 @@ DATABASE = 'ben_ben_spider'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-from luogu_spider import t,BenBen,LuoguUser,User,DeleteWant,LoginRecord,Notification
+from luogu_spider import t,BenBen,LuoguUser,User,DeleteWant,LoginRecord,Notification,doing
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField,DateTimeField, TextAreaField,PasswordField,BooleanField,RadioField
@@ -164,9 +164,24 @@ def banned():
 
 @app.cli.command()
 def rstcmb ():
+	__rescmb()
+
+def __rstcmb():
+	global t
 	t.cancel()
+	# t.__del__()
 	time.sleep(2)
+	t = threading.Timer(5.0, doing)
+	t.setDaemon(True)
 	t.start()
+
+@app.route("/api/rstcmb")
+def apirstcmb():
+	if not current_user.is_admin:
+		return jsonify({"error":"Not a admin user"}),403
+	if current_user.is_admin:
+		__rstcmb()
+		return jsonify({"success":'All right'})
 
 @app.cli.command()
 @click.option('--username', prompt=True, help='Username')
@@ -562,6 +577,7 @@ def admindeletewant(id):
 		else:
 			dwt.approved=-1
 		dwt.approved_message=form.massage.data
+		send_notification('您提出的删除请求<a href="/deletewant/{}">#{}</a>已经完成了审核，详情请点击蓝色链接，若有异议请联系管理员'.format(dwt.id,dwt.id),dwt.submit_user_id,current_user.id)
 		db.session.commit()
 		flash("成功")
 		return redirect(url_for('deletewant',id=dwt.id))
