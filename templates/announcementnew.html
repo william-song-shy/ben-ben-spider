@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}发布公告{% endblock %}
+{% block body %}
+<script src="{{url_for('static',filename='editor.md/editormd.min.js')}}"></script>
+<link rel="stylesheet" href="{{url_for('static',filename='editor.md/css/editormd.css')}}" >
+<form class="ui form" method="POST">
+    {{ form.csrf_token }}
+    {%- for fieldname, errors in form.errors.items() %}
+        {%- for error in errors %}
+            <script>
+			    swal("验证失败","{{error}}","error");
+			</script>
+        {%- endfor %}
+    {%- endfor %}
+     <div class="field" >
+         <label>
+             公告内容
+         </label>
+         <div class="editormd" id="md" style="height: 600px;">
+        </div>
+     </div>
+    <button class = "ui primary button" id="submit" name="submit" type="submit" >发布</button>
+</form>
+<script>
+    $(function() {
+                var editor = editormd("md", {
+                    height : 450,
+                    path: "{{url_for('static',filename='editor.md/lib/')}}" ,
+                    saveHTMLToTextarea : true
+                });
+            });
+</script>
+{% endblock body %}

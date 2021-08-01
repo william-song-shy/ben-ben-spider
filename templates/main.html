@@ -108,17 +108,26 @@
 				  <div class="content">
 					<a class="author" href="/user/{{i.uid}}" style="color:#4183c4 !important">{{ i.username }}</a>
 					<div class="metadata">
-					  <div class="date">{{moment(i.time).format	("YYYY-MM-DD HH:mm:ss")}}</div>
+					  <div class="date">{{moment(i.time-td).format	("YYYY-MM-DD HH:mm:ss")}}</div>
 					</div>
 					<div class="text">
 					  {{ i.text|safe }}
 					</div>
 					  <div class="actions">
-						<a class="delete" href="/deletewant/new?bid={{i.id}}">申请删除</a>
+						  <a class="delete" href="/deletewant/new?bid={{i.id}}">申请删除</a>
+						  {% if current_user.is_admin %}<a class="set" href="/api/addyulu?bid={{i.id}}">设为语录</a> {% endif %}
 					  </div>
 				  </div>
             </div>
 			{% endfor %}
 		</div>
 	</div>
+	<script>
+		$(document).ready(function(){
+			$.each ($('[alt]'),function(index,item){
+				if (item.height>50){
+					$(item).addClass("ui image")
+				}
+		})})
+	</script>
 {% endblock body %}

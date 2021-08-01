@@ -6,7 +6,7 @@ import time
 import threading
 from sqlalchemy import extract
 from sqlalchemy.dialects.mysql import INTEGER
-from app import db
+from app import db,app
 from os import environ, path
 import re
 from dotenv import load_dotenv
@@ -89,6 +89,7 @@ class Notification (db.Model):
     text=db.Column(db.Text)
     time=db.Column(db.DateTime,default=datetime.datetime.utcnow)
     readed=db.Column(db.Boolean, default=False)
+    annou=db.Column(db.Integer,index=True)
 
     def sender (self):
         return User.query.get(self.sender_id)
@@ -195,8 +196,10 @@ def pa_api ():
     db.session.commit()
 
 def doing():
-    #try:
-    pa_api()
+    try:
+        pa_api()
+    except Exception as e:
+        app.logger.exception(e)
     global t
     t = threading.Timer(5.0, doing)
     t.start()

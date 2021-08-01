@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask,render_template,redirect, url_for,flash,request,jsonify,abort,session
 from flask_login import LoginManager, UserMixin,current_user,login_user,logout_user,login_required
 from flask_moment import Moment
+#from flask_ckeditor import CKEditor, CKEditorField
 import threading
 from functools import wraps
 from sqlalchemy import extract,func,desc
@@ -25,12 +26,12 @@ app = Flask(__name__)
 app.secret_key = environ.get('sk')
 DIALECT = 'mysql'
 DRIVER = 'pymysql'
-USERNAME = 'root'
+USERNAME = 'songhongyi'
 PASSWORD = environ.get('mysqlpassword')
-HOST = '167.179.103.247'
+HOST = '127.0.0.1'
 PORT = '3306'
 DATABASE = 'ben_ben_spider'
-#app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT,DATABASE)
+app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT,DATABASE)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -41,6 +42,7 @@ from wtforms import SubmitField, StringField,DateTimeField, TextAreaField,Passwo
 from wtforms.validators import DataRequired,Length,AnyOf,EqualTo
 import click
 from flask_migrate import Migrate
+from werkzeug.security import generate_password_hash, check_password_hash
 migrate=Migrate(app,db)
 bootstrap = Bootstrap(app)
 #thread = threading.Thread(target=doing)
@@ -48,6 +50,7 @@ t.setDaemon(True)
 t.start()
 login_manager = LoginManager()
 login_manager.init_app(app)
+#ckeditor = CKEditor(app)
 limiter = Limiter(app, key_func=get_remote_address)
 moment = Moment()
 moment.init_app(app)
@@ -77,7 +80,7 @@ def confimerd_required (func):
 
 @app.route("/", methods=['GET', 'POST'])
 def main():
-	cur = datetime.datetime.utcnow()
+	cur = datetime.datetime.now()
 	v = BenBen.query.join(BenBen.user).filter(
 		extract('year', BenBen.time) == cur.year,
 		extract('month', BenBen.time) == cur.month,
@@ -112,7 +115,7 @@ def main():
 
 @app.route("/user/<int:uid>")
 def user(uid):
-	cur = datetime.datetime.utcnow()
+	cur = datetime.datetime.now()
 	u = LuoguUser.query.filter_by(uid=uid).first()
 	if not u:
 		flash("用户不存在或在服务器运行的时间内没有发过犇犇", 'danger')
@@ -136,7 +139,7 @@ def user(uid):
 		extract('day', BenBen.time) == cur.day,
 		LuoguUser.allow_paiming == True
 	).group_by(BenBen.uid).order_by(desc(func.count())).having(func.count()>v).count()
-	return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid,yulus=yulus)
+	return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid,yulus=yulus,td=datetime.timedelta(hours=8))
 
 
 @app.route("/help")
@@ -162,9 +165,6 @@ def banned():
 		LuoguUser.uid, LuoguUser.username).filter_by(allow_paiming=False).all()
 	return jsonify(users)
 
-@app.cli.command()
-def rstcmb ():
-	__rescmb()
 
 def __rstcmb():
 	global t
@@ -174,6 +174,10 @@ def __rstcmb():
 	t = threading.Timer(5.0, doing)
 	t.setDaemon(True)
 	t.start()
+
+@app.cli.command()
+def rstcmb ():
+	__rstcmb()
 
 @app.route("/api/rstcmb")
 def apirstcmb():
@@ -264,7 +268,7 @@ def ranklist():
 		if _contentOnly==1:
 			return jsonify(p.items)
 		return render_template('ranklisttime.html', pagination=p, messages=p.items,begin=begin,end=end)
-	cur = datetime.datetime.utcnow()
+	cur = datetime.datetime.now()
 	p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
 		extract('year', BenBen.time) == cur.year,
 		extract('month', BenBen.time) == cur.month,
@@ -359,7 +363,7 @@ def api_checkbenben():
 		time.sleep(5)
 		benbens = requests.get('https://www.luogu.com.cn/api/feed/list?user={}&page={}'.format(uid,page),headers=headers).json()
 	benbens=benbens['feeds']['result']
-	cur = datetime.datetime.utcnow()
+	cur = datetime.datetime.now()
 	cnt=0
 	for i in benbens[::-1]:
 		text=markdown.markdown(i['content'])
@@ -476,7 +480,7 @@ def register ():
             db.session.add(user)
             db.session.commit()
             send_notification(content='欢迎您再本站注册！祝您玩的愉快！<br> \n我们建议您尽快在<a href="/checkpaste" >这里</a>完成身份认证！<br> \n如您有任何问题，欢迎您联系<a href="/status">此列表</a>中的任何一位管理，我们很乐意帮您解答。',
-                              recipient_id=user.id)
+                              recipient_id=user.id,annou=0)
             flash("成功")
             return redirect('/')
     return render_template('register.html',form=form)
@@ -510,6 +514,10 @@ def deletewantnew():
 		dwt.reason=form.reason.data
 		dwt.submit_user_id=current_user.id
 		benben.deletewant=dwt
+		if current_user.luogu_id==benben.user_id:
+			benben.deleted = True
+			dwt.approved=1
+			dwt.approved_message="自删请求"
 		if current_user.super_admin:
 			benben.deleted = True
 			dwt.approved=1
@@ -677,12 +685,135 @@ def notification():
 	urds=Notification.query.filter(Notification.recipient_id==current_user.id,Notification.readed==False).all()
 	ntfcs.update({'readed':True})
 	db.session.commit()
-	return render_template('notification.html',ntl=ntl,urds=urds)
+	return render_template('notification.html',ntl=ntl[::-1],urds=urds)
 
-def send_notification (content:str,recipient_id,sender_id=1):
+def send_notification (content:str,recipient_id,sender_id=1,annou=None):
 	temp=Notification()
 	temp.text=content
 	temp.recipient_id=recipient_id
 	temp.sender_id=sender_id
+	temp.annou=annou
 	db.session.add(temp)
 	db.session.commit()
+
+@app.route("/api/rstcmb")
+@login_required
+def api_rstcmb ():
+	if current_user.is_admin:
+		__rstcmb()
+	else:
+		return abort(503)
+	return jsonify({"result":"success"})
+
+@app.errorhandler(500)
+def handler500 (error):
+	return '<img src="https://http.cat/500"></img>'
+
+@app.errorhandler(404)
+def handler404 (error):
+	return '<img src="https://http.cat/404"></img>'
+
+@app.route ("/api/backup/extend")
+def backup_extend():
+	cur = datetime.datetime.now()
+	v = BenBen.query.join(BenBen.user).filter(
+		extract('year', BenBen.time) == cur.year,
+		extract('month', BenBen.time) == cur.month,
+		extract('day', BenBen.time) == cur.day,
+		LuoguUser.allow_paiming == True
+	).count()
+	b = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
+		extract('year', BenBen.time) == cur.year,
+		extract('month', BenBen.time) == cur.month,
+		extract('day', BenBen.time) == cur.day,
+		LuoguUser.allow_paiming == True
+	).group_by(BenBen.uid).order_by(desc(func.count())).limit(50).all()
+	num=BenBen.query.join(BenBen.user).with_entities(BenBen.uid).filter(
+		extract('year', BenBen.time) == cur.year,
+		extract('month', BenBen.time) == cur.month,
+		extract('day', BenBen.time) == cur.day,
+		LuoguUser.allow_paiming == True
+	).group_by(BenBen.uid).count()
+	#print (b)
+	return jsonify({"num_user":num,"num_benben":v,"top_50":b})
+
+@app.route ("/admin/announcement/<int:id>")
+@confimerd_required
+def admin_announcement (id):
+	if not current_user.super_admin:
+		return abort(503)
+	t=Notification.query.filter(Notification.annou==id).first()
+	if not t:
+		flash("没有这个公告")
+		return abort(404)
+	text=t.text
+	num_a=Notification.query.filter(Notification.annou==id).count()
+	num_r=Notification.query.filter(Notification.annou==id,Notification.readed==1).count()
+	return render_template("adminannouncement.html",text=text,num_a=num_a,num_r=num_r,percent=int((num_r/num_a)*100))
+
+@app.route("/admin/announcement/new",methods=['GET','POST'])
+@confimerd_required
+def admin_announcement_new ():
+	if not current_user.super_admin:
+		return abort(503)
+	class queryform (FlaskForm):
+		submit = SubmitField('发送')
+	form=queryform()
+	if form.validate_on_submit():
+		#return form.text.data
+		luid=User.query.count()
+		aid=db.session.query(func.max(Notification.annou).label('max_aid')).one().max_aid
+		if not aid:
+			aid=0
+		db.session.execute(
+			Notification.__table__.insert(),
+			[{"sender_id":current_user.id,"recipient_id":i,'text':request.form['md-html-code'],'annou':aid+1} for i in range (1,luid+1)]
+		)
+		db.session.commit()
+		return redirect(url_for('admin_announcement',id=aid+1))
+	return render_template("announcementnew.html",form=form)
+
+@app.route ("/api/addyulu")
+@confimerd_required
+def addyulu():
+	if not current_user.is_admin:
+		return abort (503)
+	id=request.args.get('bid',-1,type=int)
+	ben=BenBen.query.filter(BenBen.id==id).first_or_404()
+	ben.yulu=True
+	db.session.commit()
+	return redirect(url_for('user',uid=ben.uid))
+
+@app.route ("/api/backup/daily")
+def backup_daily ():
+	if  not request.headers.get('password') or not check_password_hash(environ.get('backuppasswordhash'),request.headers.get('password')):
+		return abort(503)
+	year = request.args.get('year',type=int)
+	month = request.args.get('month', type=int)
+	day = request.args.get('day', type=int)
+	# lst=BenBen.query.with_entities(func.date_format(BenBen.time,"%H:%M").label('time'),func.count()).filter(
+	# 	extract('year', BenBen.time) == year,
+	# 	extract('month', BenBen.time) == month,
+	# 	extract('day', BenBen.time) == day,
+	# 	LuoguUser.allow_paiming == True).group_by('time').all()
+	ti=datetime.datetime(year=year,month=month,day=day)
+	lst=[{
+				'time' : i,
+				"count":BenBen.query.with_entities(BenBen.time,BenBen.uid).filter(
+					BenBen.time.between(ti+datetime.timedelta(minutes=i),ti+datetime.timedelta(minutes=i+1))
+				).count(),
+				'list':BenBen.query.with_entities(BenBen.uid,func.count().label('count')).filter(
+					BenBen.time.between(ti+datetime.timedelta(minutes=i),ti+datetime.timedelta(minutes=i+1))
+				).group_by(BenBen.uid).order_by(desc(func.count())).all()
+			} for i in range (24*60)]
+	#alst=[sum(lst[:i+1]) for i in range (24*60)]
+	return jsonify(lst)
+
+headers = {
+    'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"}
+
+
+@app.route ("/api/list/proxy")
+def api_list_proxy ():
+	page=request.args.get('page',1,type=int)
+	return jsonify(requests.get(environ.get('host')+"&page={}".format(page),headers=headers).json()['feeds']['result'])

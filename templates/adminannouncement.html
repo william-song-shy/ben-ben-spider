@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}公告界面{% endblock %}
+{% block body %}
+<p>
+    该公告的内容是：{{text|safe}}
+</p>
+<div class="ui indicating progress" data-percent="{{percent}}" id="progress">
+    <div class="bar"></div>
+    <div class="label"> {{num_r}} / {{num_a}} </div>
+</div>
+<script>
+    $('#progress').progress();
+</script>
+{% endblock body %}

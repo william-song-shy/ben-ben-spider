@@ -5,3 +5,6 @@ static/data/
 .env
 *.log
 *.db-journal
+*.sql
+*.replit
+migrations/
