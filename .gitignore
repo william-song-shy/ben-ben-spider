@@ -8,3 +8,4 @@ static/data/
 *.sql
 *.replit
 migrations/
+/static/editor.md
