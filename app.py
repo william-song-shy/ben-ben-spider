@@ -397,11 +397,11 @@ def admin ():
     if not current_user.is_admin:
         flash ("无权限！爬！！！！")
         return redirect('/')
-    page = request.args.get('page', 1, type=int)
+    #page = request.args.get('page', 1, type=int)
     #l=LuoguUser.query.order_by(LuoguUser.username).paginate(page, per_page=20,error_out=False)
-    l=LuoguUser.query.order_by(LuoguUser.username).all()
+    #l=LuoguUser.query.order_by(LuoguUser.username).all()
     #return render_template("admin.html",l=l.items,len=len);
-    return render_template("admin.html",l=l,len=len)
+    return render_template("admin.html")
 
 @app.route ('/testip')
 def testip():
