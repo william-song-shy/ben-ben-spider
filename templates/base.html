@@ -12,7 +12,8 @@
 		<script src="https://cdn.bootcdn.net/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
 		<meta name="referrer" content="no-referrer">
 		<script src="{{url_for('static',filename='md5.js')}}"></script>
-		{{ moment.include_moment() }}
+		<script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+		{{ moment.include_moment(no_js=true) }}
 		{{ moment.locale('zh-cn') }}　
 	</head>
 	<body>
