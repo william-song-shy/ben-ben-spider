@@ -64,6 +64,12 @@ login_manager.login_message='请先登录'
 
 #app.jinja_env.globals['urdnoti']=
 
+def redirct_back():
+	if request.referrer:
+		return redirect(request.referrer)
+	else:
+		return redirect('/')
+
 def unconfimerd ():
 	flash("请先进行认证")
 	return redirect('/checkpaste')
@@ -817,3 +823,19 @@ headers = {
 def api_list_proxy ():
 	page=request.args.get('page',1,type=int)
 	return jsonify(requests.get(environ.get('host')+"&page={}".format(page),headers=headers).json()['feeds']['result'])
+
+@app.route("/chat",methods=['GET','POST'])
+@confimerd_required
+def chat ():
+	rid=request.args.get("rid",-1,type=int)
+	class queryform (FlaskForm):
+		submit = SubmitField('发送')
+	form=queryform()
+	if form.validate_on_submit():
+		if rid==-1 or not current_user.is_admin:
+			rid=request.form.get('rid')
+		send_notification(request.form['md-html-code'],rid,current_user.id)
+		flash("成功")
+		return redirct_back()
+	admins=User.query.filter(User.is_admin==True).all()
+	return render_template("chat.html",admins=admins,form=form,rid=rid)
