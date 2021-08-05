@@ -771,12 +771,12 @@ def admin_announcement_new ():
 		aid=db.session.query(func.max(Notification.annou).label('max_aid')).one().max_aid
 		if not aid:
 			aid=0
-		db.session.execute(
-			Notification.__table__.insert(),
-			[{"sender_id":current_user.id,"recipient_id":i,'text':request.form['md-html-code'],'annou':aid+1} for i in range (1,luid+1)]
-		)
+		contest=request.form['md-html-code']
+		aid+=1
+		for i in range (1,luid+1):
+			send_notification(content=contest,recipient_id=i,sender_id=current_user.id,annou=aid)
 		db.session.commit()
-		return redirect(url_for('admin_announcement',id=aid+1))
+		return redirect(url_for('admin_announcement',id=aid))
 	return render_template("announcementnew.html",form=form)
 
 @app.route ("/api/addyulu")
