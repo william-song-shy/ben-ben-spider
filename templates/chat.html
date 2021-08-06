@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}发布公告{% endblock %}
+{% block title %}私信{% endblock %}
 {% block body %}
 <script src="{{url_for('static',filename='editor.md/editormd.min.js')}}"></script>
 <link rel="stylesheet" href="{{url_for('static',filename='editor.md/css/editormd.css')}}" >
@@ -29,7 +29,7 @@
             {% endfor %}
         </div>
     </div>
-    <button class = "ui primary button" id="submit" name="submit" type="submit" >发布</button>
+    <button class = "ui primary button" id="submit" name="submit" type="submit" >发送</button>
 </form>
 <script>
     $(function() {
