@@ -180,7 +180,7 @@ def pa_api ():
         if BenBen.query.filter_by(uid=uid, time=stime).all():
             continue
         abb = BenBen()
-        abb.text = text
+        abb.text = text.replace('<p>',"").replace('</p>',"")
         abb.username = username
         abb.uid = uid
         abb.time = stime
