@@ -30,6 +30,7 @@ class BenBen(db.Model):
     deletewant_id = db.Column(db.Integer, db.ForeignKey('delete_want.id'))
     deletewant = db.relationship('DeleteWant', uselist=False, backref='BenBen')
     yulu = db.Column(db.Boolean, default=False)
+    lid = db.Column(db.Integer,unique=True)
 
 
 class LuoguUser(db.Model):
@@ -179,10 +180,11 @@ def pa_api ():
         if BenBen.query.filter_by(uid=uid, time=stime).all():
             continue
         abb = BenBen()
-        abb.text = text.replace('<p>', "").replace('</p>', "")
+        abb.text = text
         abb.username = username
         abb.uid = uid
         abb.time = stime
+        abb.lid = i['id']
         user = LuoguUser.query.filter_by(uid=uid).first()
         if user:
             user.benbens.append(abb)

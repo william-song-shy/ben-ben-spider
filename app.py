@@ -378,10 +378,11 @@ def api_checkbenben():
 		if BenBen.query.filter_by(uid=uid, time=stime).all():
 			continue
 		abb = BenBen()
-		abb.text = text.replace('<p>',"").replace('</p>',"")
+		abb.text = text
 		abb.username = username
 		abb.uid = uid
 		abb.time = stime
+		abb.lid = i['id']
 		user = LuoguUser.query.filter_by(uid=uid).first()
 		if user:
 			user.benbens.append(abb)
