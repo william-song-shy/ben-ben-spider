@@ -177,7 +177,7 @@ def pa_api ():
         username = i['user']['name']
         stime = datetime.datetime.fromtimestamp(i['time'])
         uid=i['user']['uid']
-        if BenBen.query.filter_by(uid=uid, time=stime).all():
+        if BenBen.query.filter_by(lid=i['id']).all():
             continue
         abb = BenBen()
         abb.text = text.replace('<p>',"").replace('</p>',"")
