@@ -110,9 +110,9 @@ def main():
 		user = LuoguUser.query.filter_by(username=form.username.data).first()
 		if user:
 			return redirect(url_for('user', uid=user.uid))
-			if not user.allow_paiming:
-				flash("该用户过分刷水被禁止排名和查询", 'danger')
-				return redirect(url_for('main'))
+			# if not user.allow_paiming:
+			# 	flash("该用户过分刷水被禁止排名和查询", 'danger')
+			# 	return redirect(url_for('main'))
 		else:
 			flash("用户不存在或在服务器运行的时间内没有发过犇犇", 'danger')
 			return redirect(url_for('main'))
@@ -126,10 +126,11 @@ def user(uid):
 	if not u:
 		flash("用户不存在或在服务器运行的时间内没有发过犇犇", 'danger')
 		return redirect(url_for('main'))
-	if not u.allow_paiming:
-		flash("该用户过分刷水被禁止排名和查询", 'danger')
-		return redirect(url_for('main'))
+	# if not u.allow_paiming:
+	# 	flash("该用户过分刷水被禁止排名和查询", 'danger')
+	# 	return redirect(url_for('main'))
 	ph = u.beipohai
+	apm=u.allow_paiming
 	#print (u.allow_paiming)
 	yulus=BenBen.query.filter(BenBen.uid==uid,BenBen.yulu==True).order_by(BenBen.time).all()
 	u = BenBen.query.filter(BenBen.uid==uid,BenBen.deleted==False,BenBen.yulu==False).order_by(BenBen.time)
@@ -145,7 +146,7 @@ def user(uid):
 		extract('day', BenBen.time) == cur.day,
 		LuoguUser.allow_paiming == True
 	).group_by(BenBen.uid).order_by(desc(func.count())).having(func.count()>v).count()
-	return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid,yulus=yulus,td=datetime.timedelta(hours=8))
+	return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid,yulus=yulus,td=datetime.timedelta(hours=8),apm=apm)
 
 
 @app.route("/help")
