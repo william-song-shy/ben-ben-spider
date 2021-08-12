@@ -23,6 +23,11 @@
 	<a href="https://www.luogu.com.cn/user/{{uid}}" class="ui primary button">
 		前往洛谷个人主页
 	</a>
+	{% if current_user.super_admin %}
+		<a href="/api/banuser?uid={{uid}}" class="ui primary button">
+			{% if apm %}禁止排名{% else %}允许排名{% endif %}
+		</a>
+	{% endif %}
 	<script type="text/javascript">
 		$("[alt]").attr("class","ui image")
     	$("#check").on('click',function(){

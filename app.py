@@ -841,3 +841,23 @@ def chat ():
 		return redirct_back()
 	admins=User.query.filter(User.is_admin==True).all()
 	return render_template("chat.html",admins=admins,form=form,rid=rid)
+
+@app.route("/api/banuser")
+@confimerd_required
+def api_banuser():
+	if not current_user.super_admin:
+		flash ("无权限")
+		redirct_back()
+	uid=request.args.get("uid",-1,type=int)
+	user=LuoguUser.query.filter(LuoguUser.uid==uid).first()
+	if not user:
+		flash("用户不存在")
+		return redirct_back()
+	if user.allow_paiming:
+		flash ("已封禁")
+		user.allow_paiming=False
+	else:
+		flash ("已解封")
+		user.allow_paiming=True
+	db.session.commit()
+	return redirect("/user/{}".format(uid))
