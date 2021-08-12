@@ -854,10 +854,10 @@ def api_banuser():
 		flash("用户不存在")
 		return redirct_back()
 	if user.allow_paiming:
-		flash ("已封禁")
+		flash ("已封禁","success")
 		user.allow_paiming=False
 	else:
-		flash ("已解封")
+		flash ("已解封","success")
 		user.allow_paiming=True
 	db.session.commit()
 	return redirect("/user/{}".format(uid))

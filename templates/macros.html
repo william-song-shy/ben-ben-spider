@@ -5,17 +5,7 @@
     </a>
 {% endmacro %}
 
-{% macro render_messages(messages=None, container=False, transform={
-     'critical': 'negative',
-     'error': 'negative',
-     'info': 'info',
-     'warning': 'warning',
-     'debug': ' ',
-     'notset': ' ',
-     'message': ' ',
-     'negative':'danger',
-     'danger':'negative'
-    }, default_category='primary', dismissible=False, dismiss_animate=False) -%}
+{% macro render_messages(messages=None, default_category='error',tsf={"message":"error","success":"success"}) -%}
    
     {% with messages = messages or get_flashed_messages(with_categories=True) -%}
 	    {% if messages -%} 
@@ -28,11 +18,7 @@
 		         		</div>
 		        </div> #}
 				<script>
-                    {% if msg == "成功" %}
-                        swal("成功","{{msg}}","success");
-                    {% else %}
-					    swal("信息","{{msg}}","error");
-                    {% endif %}
+					swal("提示","{{msg}}","{{  tsf.get(cat) or default_category }}");
 				</script>
 		    {%- endfor -%}
 	    {% endif -%}
