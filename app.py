@@ -489,7 +489,7 @@ def register ():
             db.session.commit()
             send_notification(content='欢迎您再本站注册！祝您玩的愉快！<br> \n我们建议您尽快在<a href="/checkpaste" >这里</a>完成身份认证！<br> \n如您有任何问题，欢迎您联系<a href="/status">此列表</a>中的任何一位管理，我们很乐意帮您解答。',
                               recipient_id=user.id,annou=0)
-            flash("成功")
+            flash("成功",'success')
             return redirect('/')
     return render_template('register.html',form=form)
 
@@ -532,7 +532,7 @@ def deletewantnew():
 			dwt.approved_message="管理员请求，自动通过"
 		db.session.add(dwt)
 		db.session.commit()
-		flash ("成功")
+		flash ("成功",'success')
 		return redirect(url_for('deletewant',id=dwt.id))
 
 	return render_template('deletewantnew.html',benben=benben,form=form)
@@ -595,7 +595,7 @@ def admindeletewant(id):
 		dwt.approved_message=form.massage.data
 		send_notification('您提出的删除请求<a href="/deletewant/{}">#{}</a>已经完成了审核，详情请点击蓝色链接，若有异议请联系管理员'.format(dwt.id,dwt.id),dwt.submit_user_id,current_user.id)
 		db.session.commit()
-		flash("成功")
+		flash("成功",'success')
 		return redirect(url_for('deletewant',id=dwt.id))
 	return render_template("admindeletewant.html",form=form,dwt=dwt,u=User.query.filter(User.id==dwt.submit_user_id).first())
 
@@ -837,7 +837,7 @@ def chat ():
 		if rid==-1 or not current_user.is_admin:
 			rid=request.form.get('rid')
 		send_notification(request.form['md-html-code'],rid,current_user.id)
-		flash("成功")
+		flash("成功",'success')
 		return redirct_back()
 	admins=User.query.filter(User.is_admin==True).all()
 	return render_template("chat.html",admins=admins,form=form,rid=rid)
