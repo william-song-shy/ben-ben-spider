@@ -41,6 +41,9 @@ class LuoguUser(db.Model):
     beipohai = db.Column(db.Integer, default=0)
     allow_paiming = db.Column(db.Boolean, default=True)
     user=db.relationship('User')
+    color = db.Column(db.String(20))
+    ccf_level = db.Column (db.Integer)
+    badge = db.Column (db.String(50))
 
 class DeleteWant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -194,6 +197,9 @@ def pa_api ():
             user = LuoguUser(username=username, uid=uid)
             db.session.add(user)
             user.benbens.append(abb)
+        user.ccf_level=i['user']['ccfLevel']
+        user.color = i['user']['color']
+        user.badge = i['user']['badge']
         db.session.add(abb)
     db.session.commit()
 
