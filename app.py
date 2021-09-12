@@ -592,6 +592,7 @@ def admindeletewant(id):
 			dwt.benben.deleted=True
 		else:
 			dwt.approved=-1
+			dwt.benben.deleted = False
 		dwt.approved_message=form.massage.data
 		send_notification('您提出的删除请求<a href="/deletewant/{}">#{}</a>已经完成了审核，详情请点击蓝色链接，若有异议请联系管理员'.format(dwt.id,dwt.id),dwt.submit_user_id,current_user.id)
 		db.session.commit()
@@ -824,7 +825,25 @@ headers = {
 @app.route ("/api/list/proxy")
 def api_list_proxy ():
 	page=request.args.get('page',1,type=int)
-	return jsonify(requests.get(environ.get('host')+"&page={}".format(page),headers=headers).json()['feeds']['result'])
+	p = BenBen.query.join(BenBen.user).with_entities(BenBen.id, BenBen.uid,BenBen.lid, BenBen.username, BenBen.text, BenBen.time,LuoguUser.ccf_level,LuoguUser.badge,LuoguUser.color).filter(
+		BenBen.deleted == False,LuoguUser.allow_paiming==True).order_by(desc(BenBen.time)).paginate(page, per_page=20, error_out=False)
+	r=list()
+	for i in p.items:
+		r.append({
+			"content":i.text,
+			"id":i.lid,
+			"time":int(i.time.timestamp()),
+			"type":1,
+			"user":
+				{
+					"badge":i.badge,
+					"ccfLevel":i.ccf_level,
+					"color":i.color,
+					"name":i.username,
+					"uid":i.uid
+				}
+		})
+	return jsonify(r)
 
 @app.route("/chat",methods=['GET','POST'])
 @confimerd_required
