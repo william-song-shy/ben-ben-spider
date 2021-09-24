@@ -526,10 +526,14 @@ def deletewantnew():
 			benben.deleted = True
 			dwt.approved=1
 			dwt.approved_message="自删请求"
-		if current_user.super_admin:
+		elif current_user.super_admin:
 			benben.deleted = True
 			dwt.approved=1
 			dwt.approved_message="管理员请求，自动通过"
+		else:
+			if form.reason.data=="这里输入删除原因，不超过75个字符":
+				flash("请输入删除原因")
+				return redirect('/deletewant/new?bid={}'.format(benbenid))
 		db.session.add(dwt)
 		db.session.commit()
 		flash ("成功",'success')
