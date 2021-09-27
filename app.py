@@ -829,12 +829,12 @@ headers = {
 @app.route ("/api/list/proxy")
 def api_list_proxy ():
 	page=request.args.get('page',1,type=int)
-	p = BenBen.query.join(BenBen.user).with_entities(BenBen.id, BenBen.uid,BenBen.lid, BenBen.username, BenBen.text, BenBen.time,LuoguUser.ccf_level,LuoguUser.badge,LuoguUser.color).filter(
+	p = BenBen.query.join(BenBen.user).with_entities(BenBen.id, BenBen.uid,BenBen.lid, BenBen.username, BenBen.md_code ,BenBen.text, BenBen.time,LuoguUser.ccf_level,LuoguUser.badge,LuoguUser.color).filter(
 		BenBen.deleted == False,LuoguUser.allow_paiming==True).order_by(desc(BenBen.time)).paginate(page, per_page=20, error_out=False)
 	r=list()
 	for i in p.items:
 		r.append({
-			"content":i.text,
+			"content":i.md_code or i.text,
 			"id":i.lid,
 			"time":int(i.time.timestamp()),
 			"type":1,

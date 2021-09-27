@@ -21,6 +21,7 @@ import markdown
 class BenBen(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text)
+    md_code = db.Column(db.Text)
     username = db.Column(db.String(50))
     uid = db.Column(db.Integer)
     time = db.Column(db.DateTime)
@@ -174,6 +175,8 @@ def pa_api ():
     benbens=requests.get(host,headers=headers).json()
     benbens = benbens['feeds']['result']
     for i in benbens[::-1]:
+        abb = BenBen()
+        abb.md_code = i['content']
         text = markdown.markdown(i['content'])
         r = u'<img alt=".*" src="bilibili:([^"]*)">'
         text=re.sub(r, jp, text)
@@ -182,9 +185,8 @@ def pa_api ():
         uid=i['user']['uid']
         if BenBen.query.filter_by(lid=i['id']).all():
             continue
-        abb = BenBen()
         abb.text = text.replace('<p>',"").replace('</p>',"")
-        abb.username = username
+        abb.username = usernames
         abb.uid = uid
         abb.time = stime
         abb.lid = i['id']
