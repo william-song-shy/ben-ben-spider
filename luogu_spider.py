@@ -45,6 +45,7 @@ class LuoguUser(db.Model):
     color = db.Column(db.String(20))
     ccf_level = db.Column (db.Integer)
     badge = db.Column (db.String(50))
+    ptoken = db.Column (db.String(120))
 
 class DeleteWant(db.Model):
     id = db.Column(db.Integer, primary_key=True)

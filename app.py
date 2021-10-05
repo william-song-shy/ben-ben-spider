@@ -43,6 +43,7 @@ from wtforms.validators import DataRequired,Length,AnyOf,EqualTo
 import click
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
 migrate=Migrate(app,db)
 bootstrap = Bootstrap(app)
 #thread = threading.Thread(target=doing)
@@ -677,6 +678,8 @@ def add_user (id):
 	data=data['users'][0]
 	user.uid=id
 	user.username=data['name']
+	user.color=data['color']
+	user.ccf_level=data['ccfLevel']
 	db.session.add(user)
 	db.session.commit()
 	return jsonify({"status":"success"})
@@ -884,3 +887,43 @@ def api_banuser():
 		user.allow_paiming=True
 	db.session.commit()
 	return redirect("/user/{}".format(uid))
+
+@app.route("/api/pbb/verify")
+def apiverify():
+	uid=request.args.get("uid",type=int)
+	user = LuoguUser.query.filter(LuoguUser.uid == uid).first()
+	if not user:
+		add_user(uid)
+	headers = {
+		'User-Agent': "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"}
+	data = requests.get("https://www.luogu.com.cn/api/user/search?keyword={}".format(uid), headers=headers).json()
+	data = data['users'][0]
+	slogan=data['slogan']
+	if user.ptoken:
+		return user.ptoken
+	if slogan!="exlg伪犇验证":
+		return abort(403)
+	user.ptoken = str(uuid.uuid4()).replace('-',"")
+	db.session.commit()
+	return str(user.ptoken)
+
+@app.route("/api/pbb/post",methods=['POST'])
+def apipbbpost():
+	uid=request.form.get("uid")
+	token=request.form.get("token")
+	user=LuoguUser.query.filter(LuoguUser.uid==uid).first()
+	if not user:
+		return jsonify({"status":"failed","message":"不存在的用户"})
+	if user.ptoken!=token:
+		return jsonify({"status": "failed", "message": "token 错误"})
+	text=request.form.get("text")
+	nbb=BenBen()
+	nbb.md_code=text
+	nbb.text=markdown.markdown(text).replace('<p>',"").replace('</p>',"")
+	nbb.uid=uid
+	nbb.username=user.username
+	nbb.time=datetime.datetime.utcnow()+datetime.timedelta(hours=8)
+	user.benbens.append(nbb)
+	db.session.add(nbb)
+	db.session.commit()
+	return jsonify({"status": "succeed", "message": "发送成功"})
