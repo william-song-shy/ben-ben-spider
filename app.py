@@ -899,10 +899,10 @@ def apiverify():
 	data = requests.get("https://www.luogu.com.cn/api/user/search?keyword={}".format(uid), headers=headers).json()
 	data = data['users'][0]
 	slogan=data['slogan']
-	if user.ptoken:
-		return user.ptoken
 	if slogan!="exlg伪犇验证":
 		return abort(403)
+	if user.ptoken:
+		return user.ptoken
 	user.ptoken = str(uuid.uuid4()).replace('-',"")
 	db.session.commit()
 	return str(user.ptoken)
