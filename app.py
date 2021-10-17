@@ -913,10 +913,12 @@ def apipbbpost():
 	token=request.form.get("token")
 	user=LuoguUser.query.filter(LuoguUser.uid==uid).first()
 	if not user:
-		return jsonify({"status":"failed","message":"不存在的用户"})
+		return "不存在的用户",406
 	if user.ptoken!=token:
-		return jsonify({"status": "failed", "message": "token 错误"})
+		return "token 错误",406
 	text=request.form.get("text")
+	if len(text)==0:
+		return "禁止空白",406
 	nbb=BenBen()
 	nbb.md_code=text
 	nbb.text=markdown.markdown(text).replace('<p>',"").replace('</p>',"")
