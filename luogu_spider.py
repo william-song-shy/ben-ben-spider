@@ -187,7 +187,7 @@ def pa_api ():
         if BenBen.query.filter_by(lid=i['id']).all():
             continue
         abb.text = text.replace('<p>',"").replace('</p>',"")
-        abb.username = usernames
+        abb.username = username
         abb.uid = uid
         abb.time = stime
         abb.lid = i['id']

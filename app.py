@@ -44,6 +44,7 @@ import click
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
+import cgi
 migrate=Migrate(app,db)
 bootstrap = Bootstrap(app)
 #thread = threading.Thread(target=doing)
@@ -839,6 +840,7 @@ def api_list_proxy ():
 		r.append({
 			"content":i.md_code or i.text,
 			"id":i.lid,
+			"pbbid":i.id,
 			"time":int(i.time.timestamp()),
 			"type":1,
 			"user":
@@ -871,7 +873,7 @@ def chat ():
 @app.route("/api/banuser")
 @confimerd_required
 def api_banuser():
-	if not current_user.super_admin:
+	if not current_user.is_admin:
 		flash ("无权限")
 		redirct_back()
 	uid=request.args.get("uid",-1,type=int)
@@ -915,10 +917,12 @@ def apipbbpost():
 	if not user:
 		return "不存在的用户",406
 	if user.ptoken!=token:
-		return "token 错误",406
+		return "token 错误",403
 	text=request.form.get("text")
-	if len(text)==0:
+	if text.isspace() or len(text)==0:
 		return "禁止空白",406
+	if len(text) >= 100:
+		return "禁止过长",406
 	nbb=BenBen()
 	nbb.md_code=text
 	nbb.text=markdown.markdown(text).replace('<p>',"").replace('</p>',"")
@@ -929,3 +933,48 @@ def apipbbpost():
 	db.session.add(nbb)
 	db.session.commit()
 	return jsonify({"status": "succeed", "message": "发送成功"})
+
+
+@app.route("/api/pbb/delete",methods=['POST'])
+def apipbbdelete():
+	uid=request.form.get("uid")
+	token=request.form.get("token")
+	bid=request.form.get("bid")
+	user=LuoguUser.query.filter(LuoguUser.uid==uid).first()
+	bb=BenBen.query.filter(BenBen.id==bid).first()
+	if not user:
+		return "不存在的用户",406
+	if not bb:
+		return "无此犇犇{}".format(bid),404
+	if bb.uid!=user.uid:
+		return "您不是犇犇发送者，请进行举报",403
+	if user.ptoken!=token:
+		return "token 错误",403
+	bb.deleted=True
+	db.session.commit()
+	return jsonify({"status": "succeed", "message": "删除成功"})
+
+@app.route ("/api/list/user")
+def api_list_user ():
+	page=request.args.get('page',1,type=int)
+	uid=request.args.get('uid',1,type=int)
+	p = BenBen.query.join(BenBen.user).with_entities(BenBen.id, BenBen.uid,BenBen.lid, BenBen.username, BenBen.md_code ,BenBen.text, BenBen.time,LuoguUser.ccf_level,LuoguUser.badge,LuoguUser.color).filter(
+		BenBen.deleted == False,LuoguUser.allow_paiming==True,LuoguUser.uid==uid).order_by(desc(BenBen.time)).paginate(page, per_page=20, error_out=False)
+	r=list()
+	for i in p.items:
+		r.append({
+			"content":i.md_code or i.text,
+			"id":i.lid,
+			"pbbid":i.id,
+			"time":int(i.time.timestamp()),
+			"type":1,
+			"user":
+				{
+					"badge":i.badge,
+					"ccfLevel":i.ccf_level,
+					"color":i.color,
+					"name":i.username,
+					"uid":i.uid
+				}
+		})
+	return jsonify(r)
