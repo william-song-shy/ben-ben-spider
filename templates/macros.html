@@ -35,6 +35,7 @@
 	{% set url_args = {} %}
 	{% do url_args.update(request.args) %}
 	{% if pagination.total!=0 %}
+	<div class="ui basic container center aligned segment">
 		<div class="ui pagination menu">
 			{% if pagination.has_prev %}
 				<a class="item" href="{{_arg_url_for(request.endpoint, url_args, page=1)}}">
@@ -70,5 +71,6 @@
 				</a>
 			{% endif %}
 		</div>
+	</div>
 	{% endif %}
 {% endmacro %}
