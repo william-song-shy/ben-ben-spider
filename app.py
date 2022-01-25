@@ -978,3 +978,23 @@ def api_list_user ():
 				}
 		})
 	return jsonify(r)
+
+@app.route("/api/prouser")
+@confimerd_required
+def api_prouser():
+	if not current_user.is_admin:
+		flash ("无权限")
+		redirct_back()
+	id=request.args.get("id",-1,type=int)
+	user=User.query.filter(User.id==id).first()
+	if not user:
+		flash("用户不存在")
+		return redirct_back()
+	if user.pro:
+		flash ("已撤销","success")
+		user.pro=False
+	else:
+		flash ("已给予","success")
+		user.pro=True
+	db.session.commit()
+	return redirect("/admin/userl/{}".format(id))

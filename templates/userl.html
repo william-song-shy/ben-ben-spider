@@ -13,6 +13,11 @@
     <strong>这个用户 AK 了 IOI!</strong>
 </p>
 {% endif %}
+{% if user.pro %}
+<p>
+    <strong>该用户捐献了犇犇爬虫，感谢它！</strong>
+</p>
+{% endif %}
 {% if user.is_admin or current_user.is_admin %}
 <a class="ui primary button" href="/chat?rid={{user.id}}">私信联系</a>
 {% endif %}

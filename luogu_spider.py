@@ -68,6 +68,9 @@ class User (db.Model,UserMixin):
     super_admin = db.Column(db.Boolean)
     loginrecord = db.relationship('LoginRecord')
     notifications=db.relationship('Notification')
+    pro = db.Column(db.Boolean)
+    introduction = db.Column(db.Text,default="")
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

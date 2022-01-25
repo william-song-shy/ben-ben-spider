@@ -11,6 +11,11 @@
 {% else %}
 <input class="negative ui button" id="adming" name="adming" type="submit" value="撤销管理">
 {% endif %}
+{% if not user.pro %}
+<a class="ui positive button" href="/api/prouser?id={{user.id}}">给予pro</a>
+{% else %}
+<a class="ui negative button" href="/api/prouser?id={{user.id}}">撤销pro</a>
+{% endif %}
 <a class="ui primary button" href="/chat?rid={{user.id}}">私信联系</a>
         </div>
 </form>
