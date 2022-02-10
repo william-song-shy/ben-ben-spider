@@ -9,3 +9,5 @@ static/data/
 *.replit
 migrations/
 /static/editor.md
+.idea/
+勾勾.html
