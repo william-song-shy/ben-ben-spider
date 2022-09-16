@@ -1,127 +1,124 @@
 [[package]]
-category = "main"
-description = "A database migration tool for SQLAlchemy."
 name = "alembic"
+version = "1.5.3"
+description = "A database migration tool for SQLAlchemy."
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
-version = "1.5.3"
 
 [package.dependencies]
 Mako = "*"
-SQLAlchemy = ">=1.3.0"
 python-dateutil = "*"
 python-editor = ">=0.3"
+SQLAlchemy = ">=1.3.0"
 
 [[package]]
-category = "main"
-description = "Screen-scraping library"
 name = "beautifulsoup4"
+version = "4.9.3"
+description = "Screen-scraping library"
+category = "main"
 optional = false
 python-versions = "*"
-version = "4.9.3"
 
 [package.dependencies]
-[package.dependencies.soupsieve]
-python = ">=3.0"
-version = ">1.2"
+soupsieve = {version = ">1.2", markers = "python_version >= \"3.0\""}
 
 [package.extras]
 html5lib = ["html5lib"]
 lxml = ["lxml"]
 
 [[package]]
-category = "main"
-description = "Bootstrap helper for Flask/Jinja2."
 name = "bootstrap-flask"
+version = "1.5.1"
+description = "Bootstrap helper for Flask/Jinja2."
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.5.1"
 
 [package.dependencies]
 Flask = "*"
 
 [package.extras]
-dev = ["coverage", "tox", "sphinx", "pallets-sphinx-themes", "sphinxcontrib-log-cabinet"]
-docs = ["sphinx", "pallets-sphinx-themes", "sphinxcontrib-log-cabinet"]
+dev = ["coverage", "pallets-sphinx-themes", "sphinx", "sphinxcontrib-log-cabinet", "tox"]
+docs = ["pallets-sphinx-themes", "sphinx", "sphinxcontrib-log-cabinet"]
 
 [[package]]
-category = "main"
-description = "Dummy package for Beautiful Soup"
 name = "bs4"
+version = "0.0.1"
+description = "Dummy package for Beautiful Soup"
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.0.1"
 
 [package.dependencies]
 beautifulsoup4 = "*"
 
 [[package]]
-category = "main"
-description = "Foreign Function Interface for Python calling C code."
-marker = "platform_python_implementation == \"CPython\" and sys_platform == \"win32\""
 name = "cffi"
+version = "1.14.4"
+description = "Foreign Function Interface for Python calling C code."
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.14.4"
 
 [package.dependencies]
 pycparser = "*"
 
 [[package]]
-category = "main"
-description = "Composable command line interface toolkit"
 name = "click"
+version = "7.1.2"
+description = "Composable command line interface toolkit"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "7.1.2"
 
 [[package]]
-category = "main"
-description = "Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API."
 name = "dominate"
+version = "2.6.0"
+description = "Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.6.0"
 
 [[package]]
-category = "main"
-description = "A simple framework for building complex web applications."
 name = "flask"
+version = "1.1.2"
+description = "A simple framework for building complex web applications."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "1.1.2"
 
 [package.dependencies]
-Jinja2 = ">=2.10.1"
-Werkzeug = ">=0.15"
 click = ">=5.1"
 itsdangerous = ">=0.24"
+Jinja2 = ">=2.10.1"
+Werkzeug = ">=0.15"
 
 [package.extras]
-dev = ["pytest", "coverage", "tox", "sphinx", "pallets-sphinx-themes", "sphinxcontrib-log-cabinet", "sphinx-issues"]
-docs = ["sphinx", "pallets-sphinx-themes", "sphinxcontrib-log-cabinet", "sphinx-issues"]
+dev = ["coverage", "pallets-sphinx-themes", "pytest", "sphinx", "sphinx-issues", "sphinxcontrib-log-cabinet", "tox"]
+docs = ["pallets-sphinx-themes", "sphinx", "sphinx-issues", "sphinxcontrib-log-cabinet"]
 dotenv = ["python-dotenv"]
 
 [[package]]
-category = "main"
-description = "An extension that includes Bootstrap in your project, without any boilerplate code."
 name = "flask-bootstrap"
+version = "3.3.7.1"
+description = "An extension that includes Bootstrap in your project, without any boilerplate code."
+category = "main"
 optional = false
 python-versions = "*"
-version = "3.3.7.1"
 
 [package.dependencies]
-Flask = ">=0.8"
 dominate = "*"
+Flask = ">=0.8"
 visitor = "*"
 
 [[package]]
-category = "main"
-description = "Rate limiting for flask applications"
 name = "flask-limiter"
+version = "1.4"
+description = "Rate limiting for flask applications"
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.4"
 
 [package.dependencies]
 Flask = ">=0.8"
@@ -129,76 +126,76 @@ limits = "*"
 six = ">=1.4.1"
 
 [[package]]
-category = "main"
-description = "User session management for Flask"
 name = "flask-login"
+version = "0.5.0"
+description = "User session management for Flask"
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.5.0"
 
 [package.dependencies]
 Flask = "*"
 
 [[package]]
-category = "main"
-description = "SQLAlchemy database migrations for Flask applications using Alembic"
 name = "flask-migrate"
+version = "2.6.0"
+description = "SQLAlchemy database migrations for Flask applications using Alembic"
+category = "main"
 optional = false
 python-versions = "*"
-version = "2.6.0"
 
 [package.dependencies]
+alembic = ">=0.7"
 Flask = ">=0.9"
 Flask-SQLAlchemy = ">=1.0"
-alembic = ">=0.7"
 
 [[package]]
-category = "main"
-description = "Formatting of dates and times in Flask templates using moment.js."
 name = "flask-moment"
+version = "0.11.0"
+description = "Formatting of dates and times in Flask templates using moment.js."
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.11.0"
 
 [package.dependencies]
 Flask = "*"
 
 [[package]]
-category = "main"
-description = "Adds SQLAlchemy support to your Flask application."
 name = "flask-sqlalchemy"
+version = "2.4.4"
+description = "Adds SQLAlchemy support to your Flask application."
+category = "main"
 optional = false
 python-versions = ">= 2.7, != 3.0.*, != 3.1.*, != 3.2.*, != 3.3.*"
-version = "2.4.4"
 
 [package.dependencies]
 Flask = ">=0.10"
 SQLAlchemy = ">=0.8.0"
 
 [[package]]
-category = "main"
-description = "Simple integration of Flask and WTForms."
 name = "flask-wtf"
+version = "0.14.3"
+description = "Simple integration of Flask and WTForms."
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.14.3"
 
 [package.dependencies]
 Flask = "*"
-WTForms = "*"
 itsdangerous = "*"
+WTForms = "*"
 
 [[package]]
-category = "main"
-description = "Coroutine-based network library"
 name = "gevent"
+version = "21.1.2"
+description = "Coroutine-based network library"
+category = "main"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
-version = "21.1.2"
 
 [package.dependencies]
-cffi = ">=1.12.2"
-greenlet = ">=0.4.17,<2.0"
+cffi = {version = ">=1.12.2", markers = "platform_python_implementation == \"CPython\" and sys_platform == \"win32\""}
+greenlet = {version = ">=0.4.17,<2.0", markers = "platform_python_implementation == \"CPython\""}
 setuptools = "*"
 "zope.event" = "*"
 "zope.interface" = "*"
@@ -207,28 +204,27 @@ setuptools = "*"
 dnspython = ["dnspython (>=1.16.0,<2.0)", "idna"]
 docs = ["repoze.sphinx.autointerface", "sphinxcontrib-programoutput", "zope.schema"]
 monitor = ["psutil (>=5.7.0)"]
-recommended = ["dnspython (>=1.16.0,<2.0)", "idna", "cffi (>=1.12.2)", "selectors2", "backports.socketpair", "psutil (>=5.7.0)"]
-test = ["dnspython (>=1.16.0,<2.0)", "idna", "requests", "objgraph", "cffi (>=1.12.2)", "selectors2", "futures", "mock", "backports.socketpair", "contextvars (2.4)", "coverage (>=5.0)", "coveralls (>=1.7.0)", "psutil (>=5.7.0)"]
+recommended = ["backports.socketpair", "cffi (>=1.12.2)", "dnspython (>=1.16.0,<2.0)", "idna", "psutil (>=5.7.0)", "selectors2"]
+test = ["backports.socketpair", "cffi (>=1.12.2)", "contextvars (==2.4)", "coverage (>=5.0)", "coveralls (>=1.7.0)", "dnspython (>=1.16.0,<2.0)", "futures", "idna", "mock", "objgraph", "psutil (>=5.7.0)", "requests", "selectors2"]
 
 [[package]]
-category = "main"
-description = "Lightweight in-process concurrent programming"
-marker = "platform_python_implementation == \"CPython\""
 name = "greenlet"
+version = "1.0.0"
+description = "Lightweight in-process concurrent programming"
+category = "main"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
-version = "1.0.0"
 
 [package.extras]
-docs = ["sphinx"]
+docs = ["Sphinx"]
 
 [[package]]
-category = "main"
-description = "WSGI HTTP Server for UNIX"
 name = "gunicorn"
+version = "20.0.4"
+description = "WSGI HTTP Server for UNIX"
+category = "main"
 optional = false
 python-versions = ">=3.4"
-version = "20.0.4"
 
 [package.dependencies]
 setuptools = ">=3.0"
@@ -240,20 +236,20 @@ setproctitle = ["setproctitle"]
 tornado = ["tornado (>=0.2)"]
 
 [[package]]
-category = "main"
-description = "Various helpers to pass data to untrusted environments and back."
 name = "itsdangerous"
+version = "1.1.0"
+description = "Various helpers to pass data to untrusted environments and back."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.1.0"
 
 [[package]]
-category = "main"
-description = "A very fast and expressive template engine."
 name = "jinja2"
+version = "2.11.3"
+description = "A very fast and expressive template engine."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "2.11.3"
 
 [package.dependencies]
 MarkupSafe = ">=0.23"
@@ -262,140 +258,152 @@ MarkupSafe = ">=0.23"
 i18n = ["Babel (>=0.8)"]
 
 [[package]]
-category = "main"
-description = "Rate limiting utilities"
 name = "limits"
+version = "1.5.1"
+description = "Rate limiting utilities"
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.5.1"
 
 [package.dependencies]
 six = ">=1.4.1"
 
 [[package]]
+name = "Mako"
+version = "1.2.2"
+description = "A super-fast templating language that borrows the best ideas from the existing templating languages."
 category = "main"
-description = "A super-fast templating language that borrows the  best ideas from the existing templating languages."
-name = "mako"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.1.4"
+python-versions = ">=3.7"
 
 [package.dependencies]
 MarkupSafe = ">=0.9.2"
 
 [package.extras]
-babel = ["babel"]
+babel = ["Babel"]
 lingua = ["lingua"]
+testing = ["pytest"]
 
 [[package]]
-category = "main"
-description = "Python implementation of Markdown."
 name = "markdown"
+version = "3.3.3"
+description = "Python implementation of Markdown."
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "3.3.3"
 
 [package.extras]
 testing = ["coverage", "pyyaml"]
 
 [[package]]
-category = "main"
-description = "Safely add untrusted strings to HTML/XML markup."
 name = "markupsafe"
+version = "1.1.1"
+description = "Safely add untrusted strings to HTML/XML markup."
+category = "main"
 optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
-version = "1.1.1"
 
 [[package]]
-category = "main"
-description = "MySQL driver written in Python"
 name = "mysql-connector"
+version = "2.2.9"
+description = "MySQL driver written in Python"
+category = "main"
 optional = false
 python-versions = "*"
-version = "2.2.9"
 
 [[package]]
-category = "main"
-description = "C parser in Python"
-marker = "platform_python_implementation == \"CPython\" and sys_platform == \"win32\""
 name = "pycparser"
+version = "2.20"
+description = "C parser in Python"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.20"
 
 [[package]]
-category = "main"
-description = "Pure Python MySQL Driver"
 name = "pymysql"
+version = "1.0.2"
+description = "Pure Python MySQL Driver"
+category = "main"
 optional = false
 python-versions = ">=3.6"
-version = "1.0.2"
 
 [package.extras]
 ed25519 = ["PyNaCl (>=1.4.0)"]
 rsa = ["cryptography"]
 
 [[package]]
-category = "main"
-description = "Extensions to the standard Python datetime module"
 name = "python-dateutil"
+version = "2.8.1"
+description = "Extensions to the standard Python datetime module"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
-version = "2.8.1"
 
 [package.dependencies]
 six = ">=1.5"
 
 [[package]]
-category = "main"
-description = "Add .env support to your django/flask apps in development and deployments"
 name = "python-dotenv"
+version = "0.15.0"
+description = "Add .env support to your django/flask apps in development and deployments"
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.15.0"
 
 [package.extras]
 cli = ["click (>=5.0)"]
 
 [[package]]
-category = "main"
-description = "Programmatically open an editor, capture the result."
 name = "python-editor"
+version = "1.0.4"
+description = "Programmatically open an editor, capture the result."
+category = "main"
 optional = false
 python-versions = "*"
-version = "1.0.4"
 
 [[package]]
+name = "setuptools"
+version = "65.3.0"
+description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "main"
-description = "Python 2 and 3 compatibility utilities"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "rst.linker (>=1.9)", "sphinx", "sphinx-favicon", "sphinx-hoverxref (<2)", "sphinx-inline-tabs", "sphinx-notfound-page (==0.8.3)", "sphinx-reredirects", "sphinxcontrib-towncrier"]
+testing = ["build[virtualenv]", "filelock (>=3.4.0)", "flake8 (<5)", "flake8-2020", "ini2toml[lite] (>=0.9)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "mock", "pip (>=19.1)", "pip-run (>=8.8)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)", "pytest-perf", "pytest-xdist", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
+testing-integration = ["build[virtualenv]", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
+
+[[package]]
 name = "six"
+version = "1.15.0"
+description = "Python 2 and 3 compatibility utilities"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
-version = "1.15.0"
 
 [[package]]
-category = "main"
-description = "A modern CSS selector implementation for Beautiful Soup."
-marker = "python_version >= \"3.0\""
 name = "soupsieve"
+version = "2.1"
+description = "A modern CSS selector implementation for Beautiful Soup."
+category = "main"
 optional = false
 python-versions = ">=3.5"
-version = "2.1"
 
 [[package]]
-category = "main"
-description = "Database Abstraction Library"
 name = "sqlalchemy"
+version = "1.3.22"
+description = "Database Abstraction Library"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.3.22"
 
 [package.extras]
 mssql = ["pyodbc"]
 mssql_pymssql = ["pymssql"]
 mssql_pyodbc = ["pyodbc"]
 mysql = ["mysqlclient"]
-oracle = ["cx-oracle"]
+oracle = ["cx_oracle"]
 postgresql = ["psycopg2"]
 postgresql_pg8000 = ["pg8000"]
 postgresql_psycopg2binary = ["psycopg2-binary"]
@@ -403,32 +411,32 @@ postgresql_psycopg2cffi = ["psycopg2cffi"]
 pymysql = ["pymysql"]
 
 [[package]]
-category = "main"
-description = "A tiny pythonic visitor implementation."
 name = "visitor"
+version = "0.1.3"
+description = "A tiny pythonic visitor implementation."
+category = "main"
 optional = false
 python-versions = "*"
-version = "0.1.3"
 
 [[package]]
-category = "main"
-description = "The comprehensive WSGI web application library."
 name = "werkzeug"
+version = "1.0.1"
+description = "The comprehensive WSGI web application library."
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "1.0.1"
 
 [package.extras]
-dev = ["pytest", "pytest-timeout", "coverage", "tox", "sphinx", "pallets-sphinx-themes", "sphinx-issues"]
+dev = ["coverage", "pallets-sphinx-themes", "pytest", "pytest-timeout", "sphinx", "sphinx-issues", "tox"]
 watchdog = ["watchdog"]
 
 [[package]]
-category = "main"
-description = "A flexible forms validation and rendering library for Python web development."
 name = "wtforms"
+version = "2.3.3"
+description = "A flexible forms validation and rendering library for Python web development."
+category = "main"
 optional = false
 python-versions = "*"
-version = "2.3.3"
 
 [package.dependencies]
 MarkupSafe = "*"
@@ -439,42 +447,44 @@ ipaddress = ["ipaddress"]
 locale = ["Babel (>=1.3)"]
 
 [[package]]
-category = "main"
-description = "Very basic event publishing system"
 name = "zope.event"
+version = "4.5.0"
+description = "Very basic event publishing system"
+category = "main"
 optional = false
 python-versions = "*"
-version = "4.5.0"
 
 [package.dependencies]
 setuptools = "*"
 
 [package.extras]
-docs = ["sphinx"]
+docs = ["Sphinx"]
 test = ["zope.testrunner"]
 
 [[package]]
-category = "main"
-description = "Interfaces for Python"
 name = "zope.interface"
+version = "5.2.0"
+description = "Interfaces for Python"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "5.2.0"
 
 [package.dependencies]
 setuptools = "*"
 
 [package.extras]
-docs = ["sphinx", "repoze.sphinx.autointerface"]
+docs = ["Sphinx", "repoze.sphinx.autointerface"]
 test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "d81c3322a5151fc6ed64576f60db5b172210af5c69c4f56324def0ecabccd9c8"
+lock-version = "1.1"
 python-versions = "^3.8"
+content-hash = "d81c3322a5151fc6ed64576f60db5b172210af5c69c4f56324def0ecabccd9c8"
 
 [metadata.files]
 alembic = [
+    {file = "alembic-1.5.3-py2.py3-none-any.whl", hash = "sha256:aac2c2239e31b821dc3fb0497c6d903827ba2d68ee1f3d571f00a871e05309fc"},
     {file = "alembic-1.5.3.tar.gz", hash = "sha256:04608b6904a6e6bd1af83e1a48f73f50ba214aeddef44b92d498df33818654a8"},
 ]
 beautifulsoup4 = [
@@ -659,8 +669,9 @@ limits = [
     {file = "limits-1.5.1-py2-none-any.whl", hash = "sha256:0e5f8b10f18dd809eb2342f5046eb9aa5e4e69a0258567b5f4aa270647d438b3"},
     {file = "limits-1.5.1.tar.gz", hash = "sha256:f0c3319f032c4bfad68438ed1325c0fac86dac64582c7c25cddc87a0b658fa20"},
 ]
-mako = [
-    {file = "Mako-1.1.4.tar.gz", hash = "sha256:17831f0b7087c313c0ffae2bcbbd3c1d5ba9eeac9c38f2eb7b50e8c99fe9d5ab"},
+Mako = [
+    {file = "Mako-1.2.2-py3-none-any.whl", hash = "sha256:8efcb8004681b5f71d09c983ad5a9e6f5c40601a6ec469148753292abc0da534"},
+    {file = "Mako-1.2.2.tar.gz", hash = "sha256:3724869b363ba630a272a5f89f68c070352137b8fd1757650017b7e06fda163f"},
 ]
 markdown = [
     {file = "Markdown-3.3.3-py3-none-any.whl", hash = "sha256:c109c15b7dc20a9ac454c9e6025927d44460b85bd039da028d85e2b6d0bcc328"},
@@ -745,6 +756,10 @@ python-editor = [
     {file = "python_editor-1.0.4-py2.7.egg", hash = "sha256:ea87e17f6ec459e780e4221f295411462e0d0810858e055fc514684350a2f522"},
     {file = "python_editor-1.0.4-py3-none-any.whl", hash = "sha256:1bf6e860a8ad52a14c3ee1252d5dc25b2030618ed80c022598f00176adc8367d"},
     {file = "python_editor-1.0.4-py3.5.egg", hash = "sha256:c3da2053dbab6b29c94e43c486ff67206eafbe7eb52dbec7390b5e2fb05aac77"},
+]
+setuptools = [
+    {file = "setuptools-65.3.0-py3-none-any.whl", hash = "sha256:2e24e0bec025f035a2e72cdd1961119f557d78ad331bb00ff82efb2ab8da8e82"},
+    {file = "setuptools-65.3.0.tar.gz", hash = "sha256:7732871f4f7fa58fb6bdcaeadb0161b2bd046c85905dbaa066bdcbcc81953b57"},
 ]
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
