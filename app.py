@@ -17,9 +17,11 @@ import flask_bootstrap
 #import gunicorn
 #import gevent
 from os import environ, path
+from sys import platform
 from dotenv import load_dotenv
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+DEV = platform == 'win32'
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
 app = Flask(__name__)
@@ -32,7 +34,8 @@ HOST = '127.0.0.1'
 PORT = '3306'
 DATABASE = 'ben_ben_spider'
 app.config['SQLALCHEMY_DATABASE_URI'] = "{}+{}://{}:{}@{}:{}/{}?charset=utf8".format(DIALECT, DRIVER, USERNAME, PASSWORD, HOST, PORT,DATABASE)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
+if DEV:
+	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 from luogu_spider import t,BenBen,LuoguUser,User,DeleteWant,LoginRecord,Notification,doing
