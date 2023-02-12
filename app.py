@@ -38,7 +38,7 @@ if DEV:
 	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+app.root_path+'/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-from luogu_spider import t,BenBen,LuoguUser,User,DeleteWant,LoginRecord,Notification,doing
+from luogu_spider import BenBen,LuoguUser,User,DeleteWant,LoginRecord,Notification,pa_api
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField,DateTimeField, TextAreaField,PasswordField,BooleanField,RadioField
@@ -48,13 +48,19 @@ from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import cgi
+from flask_apscheduler import APScheduler
 migrate=Migrate(app,db)
 bootstrap = Bootstrap(app)
 #thread = threading.Thread(target=doing)
-t.setDaemon(True)
-t.start()
+# t.setDaemon(True)
+# t.start()
 login_manager = LoginManager()
 login_manager.init_app(app)
+scheduler = APScheduler()
+# scheduler.api_enabled=True
+scheduler.init_app(app)
+scheduler.start()
+scheduler.add_job(id='1',func=pa_api,trigger='interval',seconds=5)
 #ckeditor = CKEditor(app)
 limiter = Limiter(app, key_func=get_remote_address)
 moment = Moment()
@@ -179,13 +185,14 @@ def banned():
 
 
 def __rstcmb():
-	global t
-	t.cancel()
-	# t.__del__()
-	time.sleep(2)
-	t = threading.Timer(5.0, doing)
-	t.setDaemon(True)
-	t.start()
+	pass
+	# global t
+	# t.cancel()
+	# # t.__del__()
+	# time.sleep(2)
+	# t = threading.Timer(5.0, doing)
+	# t.setDaemon(True)
+	# t.start()
 
 @app.cli.command()
 def rstcmb ():

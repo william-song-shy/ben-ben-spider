@@ -209,17 +209,17 @@ def pa_api ():
         db.session.add(abb)
     db.session.commit()
 
-def doing():
-    try:
-        pa_api()
-    except Exception as e:
-        app.logger.exception(e)
-    global t
-    t = threading.Timer(5.0, doing)
-    t.start()
-    #except BaseException as reason:
-    #    fo = open("foo.txt", "w+")
-    #    fo.write(str(reason))
-    #    fo.close()
+# def doing():
+#     try:
+#         pa_api()
+#     except Exception as e:
+#         app.logger.exception(e)
+#     global t
+#     t = threading.Timer(5.0, doing)
+#     t.start()
+#     #except BaseException as reason:
+#     #    fo = open("foo.txt", "w+")
+#     #    fo.write(str(reason))
+#     #    fo.close()
 
-t = threading.Timer(5.0, doing)
+# t = threading.Timer(5.0, doing)
