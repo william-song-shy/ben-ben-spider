@@ -48,7 +48,7 @@ from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 import cgi
-from flask_apscheduler import APScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 migrate=Migrate(app,db)
 bootstrap = Bootstrap(app)
 #thread = threading.Thread(target=doing)
@@ -56,15 +56,16 @@ bootstrap = Bootstrap(app)
 # t.start()
 login_manager = LoginManager()
 login_manager.init_app(app)
-scheduler = APScheduler()
-# scheduler.api_enabled=True
-scheduler.init_app(app)
+scheduler = BackgroundScheduler()
+# scheduler.api_enabled=True]
 scheduler.start()
-scheduler.add_job(id='1',func=pa_api,trigger='interval',seconds=5)
+scheduler.add_job(pa_api,id='1',trigger='interval',seconds=5)
 #ckeditor = CKEditor(app)
 limiter = Limiter(app, key_func=get_remote_address)
 moment = Moment()
 moment.init_app(app)
+
+BJTime = datetime.timezone(datetime.timedelta(hours=8))
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -97,17 +98,17 @@ def confimerd_required (func):
 
 @app.route("/", methods=['GET', 'POST'])
 def main():
-	cur = datetime.datetime.now()
+	cur = datetime.datetime.now(BJTime).date()
+	mn = datetime.datetime.combine(cur, datetime.time.min).replace(tzinfo=BJTime)
+	mx = datetime.datetime.combine(cur, datetime.time.max).replace(tzinfo=BJTime)
+	utcmn = mn.astimezone(datetime.timezone.utc)
+	utcmx = mx.astimezone(datetime.timezone.utc)
 	v = BenBen.query.join(BenBen.user).filter(
-		extract('year', BenBen.time) == cur.year,
-		extract('month', BenBen.time) == cur.month,
-		extract('day', BenBen.time) == cur.day,
+		BenBen.time.between(utcmn, utcmx),
 		LuoguUser.allow_paiming == True
 	).count()
 	b = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
-		extract('year', BenBen.time) == cur.year,
-		extract('month', BenBen.time) == cur.month,
-		extract('day', BenBen.time) == cur.day,
+		BenBen.time.between(utcmn, utcmx),
 		LuoguUser.allow_paiming == True
 	).group_by(BenBen.uid).order_by(desc(func.count())).limit(20)
 	# print(b)
@@ -132,7 +133,11 @@ def main():
 
 @app.route("/user/<int:uid>")
 def user(uid):
-	cur = datetime.datetime.now()
+	cur = datetime.datetime.now(BJTime).date()
+	mn = datetime.datetime.combine(cur, datetime.time.min).replace(tzinfo=BJTime)
+	mx = datetime.datetime.combine(cur, datetime.time.max).replace(tzinfo=BJTime)
+	utcmn = mn.astimezone(datetime.timezone.utc)
+	utcmx = mx.astimezone(datetime.timezone.utc)
 	u = LuoguUser.query.filter_by(uid=uid).first()
 	if not u:
 		flash("用户不存在或在服务器运行的时间内没有发过犇犇", 'danger')
@@ -146,15 +151,11 @@ def user(uid):
 	yulus=BenBen.query.filter(BenBen.uid==uid,BenBen.yulu==True).order_by(BenBen.time).all()
 	u = BenBen.query.filter(BenBen.uid==uid,BenBen.deleted==False,BenBen.yulu==False).order_by(BenBen.time)
 	v = BenBen.query.filter(
-		extract('year', BenBen.time) == cur.year,
-		extract('month', BenBen.time) == cur.month,
-		extract('day', BenBen.time) == cur.day,
+		BenBen.time.between(utcmn, utcmx),
 		BenBen.uid == uid
 	).count()
 	pm= BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
-		extract('year', BenBen.time) == cur.year,
-		extract('month', BenBen.time) == cur.month,
-		extract('day', BenBen.time) == cur.day,
+		BenBen.time.between(utcmn, utcmx),
 		LuoguUser.allow_paiming == True
 	).group_by(BenBen.uid).order_by(desc(func.count())).having(func.count()>v).count()
 	return render_template('main.html', benbens=u[:-101:-1], v=v, pm=pm+1, ph=ph,uid=uid,yulus=yulus,td=datetime.timedelta(hours=8),apm=apm)
@@ -287,11 +288,13 @@ def ranklist():
 		if _contentOnly==1:
 			return jsonify(p.items)
 		return render_template('ranklisttime.html', pagination=p, messages=p.items,begin=begin,end=end)
-	cur = datetime.datetime.now()
+	cur = datetime.datetime.now(BJTime).date()
+	mn = datetime.datetime.combine(cur, datetime.time.min).replace(tzinfo=BJTime)
+	mx = datetime.datetime.combine(cur, datetime.time.max).replace(tzinfo=BJTime)
+	utcmn = mn.astimezone(datetime.timezone.utc)
+	utcmx = mx.astimezone(datetime.timezone.utc)
 	p = BenBen.query.join(BenBen.user).with_entities(func.count().label('count'), BenBen.username, BenBen.uid).filter(
-		extract('year', BenBen.time) == cur.year,
-		extract('month', BenBen.time) == cur.month,
-		extract('day', BenBen.time) == cur.day,
+		BenBen.time.between(utcmn, utcmx),
 		LuoguUser.allow_paiming == True).group_by(BenBen.uid).order_by(desc(func.count())).paginate(page, per_page=20, error_out=False)
 	if _contentOnly==1:
 			return jsonify(p.items)
