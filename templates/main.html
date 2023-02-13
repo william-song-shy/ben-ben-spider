@@ -95,7 +95,7 @@
 				  <div class="content">
 					<a class="author" href="/user/{{i.uid}}" style="color:#4183c4 !important">{{ i.username }}</a>
 					<div class="metadata">
-					  <div class="date">{{moment(i.time-td).format	("YYYY-MM-DD HH:mm:ss")}}</div>
+					  <div class="date">{{moment(i.time).format	("YYYY-MM-DD HH:mm:ss")}}</div>
 					</div>
 					<div class="text">
 					  {{ i.text|safe }}
@@ -116,7 +116,7 @@
 				  <div class="content">
 					<a class="author" href="/user/{{i.uid}}" style="color:#4183c4 !important">{{ i.username }}</a>
 					<div class="metadata">
-					  <div class="date">{{moment(i.time-td).format	("YYYY-MM-DD HH:mm:ss")}}</div>
+					  <div class="date">{{moment(i.time).format	("YYYY-MM-DD HH:mm:ss")}}</div>
 					</div>
 					<div class="text">
 					  {{ i.text|safe }}
